@@ -13,8 +13,7 @@ namespace AlgoKit.TestConsole
             Console.WriteLine("AlgoKit Test Console");
             Console.WriteLine("Doing stuff...");
 
-            var instance = new ToBeDeleted();
-            Console.WriteLine(instance.Fixed(true));
+
 
             Console.WriteLine();
             Console.WriteLine("Finished");
