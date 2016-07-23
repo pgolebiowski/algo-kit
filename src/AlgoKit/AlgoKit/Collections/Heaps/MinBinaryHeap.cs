@@ -7,7 +7,7 @@ namespace AlgoKit.Collections.Heaps
     /// Represents a heap where the parent key is less than or equal
     /// to the child keys.
     /// </summary>
-    public class MinBinaryHeap<T> : BinaryHeap<T>
+    public class MinBinaryHeap<T> : BinaryHeap<T>, IMinHeap<T>
         where T : IComparable<T>
     {
         /// <summary>

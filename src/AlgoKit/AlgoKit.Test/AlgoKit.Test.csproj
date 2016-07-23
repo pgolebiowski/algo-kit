@@ -54,6 +54,7 @@
   <ItemGroup>
     <Compile Include="Collections\Heaps\MaxBinaryHeapTests.cs" />
     <Compile Include="Collections\Heaps\MinBinaryHeapTests.cs" />
+    <Compile Include="Collections\Heaps\PairWithPriority.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

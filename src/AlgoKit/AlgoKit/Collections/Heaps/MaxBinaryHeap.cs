@@ -7,7 +7,7 @@ namespace AlgoKit.Collections.Heaps
     /// Represents a heap where the parent key is greater than or equal
     /// to the child keys.
     /// </summary>
-    public class MaxBinaryHeap<T> : BinaryHeap<T>
+    public class MaxBinaryHeap<T> : BinaryHeap<T>, IMaxHeap<T>
         where T : IComparable<T>
     {
         /// <summary>

@@ -62,7 +62,7 @@ namespace AlgoKit.Collections.Heaps
         /// <summary>
         /// Adds an item to the heap.
         /// </summary>
-        public void Add(T item)
+        public void Insert(T item)
         {
             // Add the item to the bottom level of the heap
             var index = this.Items.Count;
@@ -89,6 +89,27 @@ namespace AlgoKit.Collections.Heaps
             // remaining nodes.
             if (lastIndex > 0)
                 this.SiftDown(index);
+        }
+
+        /// <summary>
+        /// Updates the value of the node with the specified index and restores the heap
+        /// property. The new value can be greater, lesser, or equal to the current one.
+        /// </summary>
+        /// <param name="index">The index of the node to be modified.</param>
+        /// <param name="item">The new value of the node.</param>
+        public void Update(int index, T item)
+        {
+            var oldItem = this.Items[index];
+            this.Items[index] = item;
+
+            if (this.WouldBeExtractedEarlier(item, oldItem))
+            {
+                this.SiftUp(index);
+            }
+            else if (this.WouldBeExtractedEarlier(oldItem, item))
+            {
+                this.SiftDown(index);
+            }
         }
 
         /// <summary>
