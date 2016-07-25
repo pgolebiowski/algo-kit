@@ -40,11 +40,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Collections\Heaps\DAryHeap.cs" />
     <Compile Include="Collections\Heaps\BinaryHeap.cs" />
-    <Compile Include="Collections\Heaps\IMaxHeap.cs" />
-    <Compile Include="Collections\Heaps\IMinHeap.cs" />
-    <Compile Include="Collections\Heaps\MaxBinaryHeap.cs" />
-    <Compile Include="Collections\Heaps\MinBinaryHeap.cs" />
+    <Compile Include="Collections\Heaps\TernaryHeap.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
