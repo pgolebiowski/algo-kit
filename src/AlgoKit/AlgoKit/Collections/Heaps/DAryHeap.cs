@@ -181,11 +181,11 @@ namespace AlgoKit.Collections.Heaps
             var current = this.elements[index];
             this.elements[index] = item;
 
-            if (this.WouldBeExtractedEarlier(item, current))
+            if (this.ShouldBeExtractedEarlier(item, current))
             {
                 this.MoveUp(index);
             }
-            else if (this.WouldBeExtractedEarlier(current, item))
+            else if (this.ShouldBeExtractedEarlier(current, item))
             {
                 this.MoveDown(index);
             }
@@ -202,7 +202,7 @@ namespace AlgoKit.Collections.Heaps
         /// Determines whether one object should be extracted from the heap earlier
         /// than the second one.
         /// </summary>
-        private bool WouldBeExtractedEarlier(T first, T second)
+        private bool ShouldBeExtractedEarlier(T first, T second)
         {
             return this.comparer.Compare(first, second) < 0;
         }
@@ -273,7 +273,7 @@ namespace AlgoKit.Collections.Heaps
                 var parentIndex = this.GetParentIndex(index);
                 var parent = this.elements[parentIndex];
 
-                if (this.WouldBeExtractedEarlier(toMove, parent))
+                if (this.ShouldBeExtractedEarlier(toMove, parent))
                 {
                     this.elements[index] = parent;
                     index = parentIndex;
@@ -296,14 +296,15 @@ namespace AlgoKit.Collections.Heaps
             // for this value to drop in. Similar optimization as in the insertion sort.
             var toMove = this.elements[index];
 
-            // Locally, it is the element that would be extracted first.
-            var localPeekIndex = index;
-            var localPeek = toMove;
+            // Within a family (current node and its children) it is the element
+            // that should be extracted first.
+            var familyTopIndex = index;
+            var familyTop = toMove;
 
             while (true)
             {
-                // Check if the current node would really be extracted first, or maybe
-                // one of its children would be extracted earlier.
+                // Check if the current node should really be extracted first, or maybe
+                // one of its children should be extracted earlier.
                 var childrenIndexes = this.EnumerateChildrenIndexes(index);
 
                 foreach (var childIndex in childrenIndexes)
@@ -313,23 +314,23 @@ namespace AlgoKit.Collections.Heaps
                         break;
 
                     var child = this.elements[childIndex];
-                    if (this.WouldBeExtractedEarlier(child, localPeek))
+                    if (this.ShouldBeExtractedEarlier(child, familyTop))
                     {
-                        localPeekIndex = childIndex;
-                        localPeek = child;
+                        familyTopIndex = childIndex;
+                        familyTop = child;
                     }
                 }
                 
-                // In case the current node would really be extracted first, there is
+                // In case the current node should really be extracted first, there is
                 // nothing more to do - a free spot for it was found.
-                if (index == localPeekIndex)
+                if (index == familyTopIndex)
                     break;
 
                 // Move the top value up by one node and now investigate the
                 // node that was considered to be the top child (recursive).
-                this.elements[index] = localPeek;
-                index = localPeekIndex;
-                localPeek = toMove;
+                this.elements[index] = familyTop;
+                index = familyTopIndex;
+                familyTop = toMove;
             }
 
             this.elements[index] = toMove;
