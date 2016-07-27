@@ -87,7 +87,6 @@ namespace AlgoKit.Collections.Heaps
                 throw new InvalidOperationException("The heap is empty.");
 
             return this.elements[0];
-
         }
 
         /// <summary>
@@ -192,6 +191,15 @@ namespace AlgoKit.Collections.Heaps
         }
 
         /// <summary>
+        /// Merges this heap with the elements of another heap.
+        /// </summary>
+        public void Merge(DAryHeap<T> other)
+        {
+            this.elements.AddRange(other.elements);
+            this.Heapify();
+        }
+
+        /// <summary>
         /// Returns an enumerator that iterates through the heap.
         /// </summary>
         public IEnumerator<T> GetEnumerator() => this.elements.GetEnumerator();
@@ -202,6 +210,7 @@ namespace AlgoKit.Collections.Heaps
         /// Determines whether one object should be extracted from the heap earlier
         /// than the second one.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private bool ShouldBeExtractedEarlier(T first, T second)
         {
             return this.comparer.Compare(first, second) < 0;
@@ -214,14 +223,10 @@ namespace AlgoKit.Collections.Heaps
         private int GetParentIndex(int index) => (index - 1) / this.Arity;
 
         /// <summary>
-        /// Enumerates the indexes of element's children.
+        /// Gets the index of the first child of an element.
         /// </summary>
-        private IEnumerable<int> EnumerateChildrenIndexes(int index)
-        {
-            var leftmostChild = this.Arity * index + 1;
-            for (var i = 0; i < this.Arity; ++i)
-                yield return leftmostChild + i;
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private int GetFirstChildIndex(int index) => this.Arity * index + 1;
 
         /// <summary>
         /// Removes the element at the specified index of the heap.
@@ -265,7 +270,7 @@ namespace AlgoKit.Collections.Heaps
         {
             var toMove = this.elements[index];
 
-            // Instead of swapping items all th way to the root, we will perform
+            // Instead of swapping items all the way to the root, we will perform
             // a similar optimization as in the insertion sort.
 
             while (index > 0)
@@ -291,46 +296,40 @@ namespace AlgoKit.Collections.Heaps
         /// <param name="index">The index of the node to be moved down.</param>
         private void MoveDown(int index)
         {
-            // The node to moved down will not actually be swapped every time.
-            // Rather, values on the affected path will move up, leaving a free spot
+            // The node to move down will not actually be swapped every time.
+            // Rather, values on the affected path will be moved up, thus leaving a free spot
             // for this value to drop in. Similar optimization as in the insertion sort.
             var toMove = this.elements[index];
 
-            // Within a family (current node and its children) it is the element
-            // that should be extracted first.
-            var familyTopIndex = index;
-            var familyTop = toMove;
-
-            while (true)
+            int i;
+            while ((i = this.GetFirstChildIndex(index)) < this.Count)
             {
-                // Check if the current node should really be extracted first, or maybe
-                // one of its children should be extracted earlier.
-                var childrenIndexes = this.EnumerateChildrenIndexes(index);
+                // Check if the current node (pointed by 'index') should really be extracted 
+                // first, or maybe one of its children should be extracted earlier.
+                var topChildIndex = i;
+                var topChild = this.elements[topChildIndex];
 
-                foreach (var childIndex in childrenIndexes)
+                var childrenIndexesLimit = Math.Min(i + this.Arity, this.Count);
+
+                while (++i < childrenIndexesLimit)
                 {
-                    // If this index is not valid, the rest will be invalid as well.
-                    if (childIndex >= this.Count)
-                        break;
-
-                    var child = this.elements[childIndex];
-                    if (this.ShouldBeExtractedEarlier(child, familyTop))
+                    var child = this.elements[i];
+                    if (this.comparer.Compare(child, topChild) < 0)
                     {
-                        familyTopIndex = childIndex;
-                        familyTop = child;
+                        topChildIndex = i;
+                        topChild = child;
                     }
                 }
-                
-                // In case the current node should really be extracted first, there is
-                // nothing more to do - a free spot for it was found.
-                if (index == familyTopIndex)
+
+                // In case no child needs to be extracted earlier than the current node,
+                // there is nothing more to do - the right spot was found.
+                if (this.comparer.Compare(toMove, topChild) <= 0)
                     break;
 
                 // Move the top value up by one node and now investigate the
                 // node that was considered to be the top child (recursive).
-                this.elements[index] = familyTop;
-                index = familyTopIndex;
-                familyTop = toMove;
+                this.elements[index] = topChild;
+                index = topChildIndex;
             }
 
             this.elements[index] = toMove;

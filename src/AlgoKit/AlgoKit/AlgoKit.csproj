@@ -40,6 +40,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Collections\Heaps\BinomialHeap.cs" />
+    <Compile Include="Collections\Heaps\BinomialTree.cs" />
+    <Compile Include="Collections\Heaps\BinomialTreeCollection.cs" />
+    <Compile Include="Collections\Heaps\BinomialTreeNode.cs" />
     <Compile Include="Collections\Heaps\DAryHeap.cs" />
     <Compile Include="Collections\Heaps\BinaryHeap.cs" />
     <Compile Include="Collections\Heaps\TernaryHeap.cs" />

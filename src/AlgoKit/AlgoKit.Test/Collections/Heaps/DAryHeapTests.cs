@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using AlgoKit.Collections.Heaps;
 using NUnit.Framework;
-using Ploeh.AutoFixture;
 
 namespace AlgoKit.Test.Collections.Heaps
 {
@@ -19,14 +18,7 @@ namespace AlgoKit.Test.Collections.Heaps
         {
             return new DAryHeap<int>(arity, new List<int>(collection), Comparer<int>.Default);
         }
-
-        private static List<int> GenerateList(int size, int minimum = int.MinValue, int maximum = int.MaxValue)
-        {
-            var fixture = new Fixture { RepeatCount = size };
-            fixture.Customizations.Add(new RandomNumericSequenceGenerator(minimum, maximum));
-            return fixture.Create<List<int>>();
-        } 
-
+        
         public static IEnumerable<int> GetAritiesToTest()
         {
             foreach (var arity in Enumerable.Range(1, 20))
@@ -88,7 +80,7 @@ namespace AlgoKit.Test.Collections.Heaps
         public void Should_heapify_collection_correctly(int arity)
         {
             // Arrange
-            var items = GenerateList(2000, -200, 200);
+            var items = Utils.GenerateList(2000, -200, 200);
             var heap = CreateHeap(arity, items);
 
             // Act & Assert
@@ -106,22 +98,30 @@ namespace AlgoKit.Test.Collections.Heaps
         }
 
         [TestCaseSource(nameof(GetAritiesToTest))]
-        public void Elements_should_be_inserted_correctly(int arity)
+        public void Elements_should_be_added_and_popped_correctly(int arity)
         {
             // Arrange
-            var items = GenerateList(2000, -200, 200);
+            var items = Utils.GenerateList(2000, -200, 200);
             var heap = CreateHeap(arity);
+            var count = 0;
 
             // Act
             foreach (var item in items)
+            {
+                Assert.AreEqual(count, heap.Count);
                 heap.Add(item);
+                Assert.AreEqual(++count, heap.Count);
+            }
 
             // Assert
             foreach (var item in items.OrderBy(x => x))
             {
                 Assert.AreEqual(false, heap.IsEmpty);
                 Assert.AreEqual(item, heap.Top());
+
+                Assert.AreEqual(count, heap.Count);
                 Assert.AreEqual(item, heap.Pop());
+                Assert.AreEqual(--count, heap.Count);
             }
 
             Assert.AreEqual(true, heap.IsEmpty);
@@ -131,7 +131,7 @@ namespace AlgoKit.Test.Collections.Heaps
         public void Elements_should_be_replaced_correctly(int arity)
         {
             // Arrange
-            var items = GenerateList(5000, -2500, 2500)
+            var items = Utils.GenerateList(5000, -2500, 2500)
                 .Distinct()
                 .Select(x => new PairWithPriority<int, string>(x, Guid.NewGuid().ToString()))
                 .ToList();

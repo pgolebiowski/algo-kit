@@ -52,8 +52,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Collections\Heaps\BinomialHeapTests.cs" />
     <Compile Include="Collections\Heaps\DAryHeapTests.cs" />
     <Compile Include="Collections\Heaps\PairWithPriority.cs" />
+    <Compile Include="Collections\Heaps\Utils.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
