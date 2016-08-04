@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>AlgoKit</id>
+    <version>$version$</version>
+    <authors>Patryk Gołębiowski</authors>
+    <owners>Patryk Gołębiowski</owners>
+
+    <projectUrl>https://github.com/pgolebiowski/algo-kit</projectUrl>
+    <licenseUrl>https://github.com/pgolebiowski/algo-kit/blob/master/LICENSE</licenseUrl>
+
+    <description>.</description>
+
+    <copyright>Copyright 2016</copyright>
+    <tags>algorithm structures heap tree binomial pairing</tags>
+    <dependencies>
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="obj\Release\AlgoKit.dll" target="lib" />
+  </files>
+</package>
