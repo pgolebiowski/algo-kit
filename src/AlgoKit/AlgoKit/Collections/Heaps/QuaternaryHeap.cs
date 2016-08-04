@@ -3,24 +3,24 @@
 namespace AlgoKit.Collections.Heaps
 {
     /// <summary>
-    /// Represents a heap-ordered complete ternary tree.
+    /// Represents a heap-ordered complete quaternary tree.
     /// </summary>
-    public class TernaryHeap<T> : DAryHeap<T>
+    public class QuaternaryHeap<T> : DAryHeap<T>
     {
         /// <summary>
-        /// Creates an empty ternary heap.
+        /// Creates an empty quaternary heap.
         /// </summary>
         /// <param name="comparer">The comparer used to determine whether one object should be extracted from the heap earlier than the other one.</param>
-        public TernaryHeap(IComparer<T> comparer) : base(3, comparer)
+        public QuaternaryHeap(IComparer<T> comparer) : base(4, comparer)
         {
         }
 
         /// <summary>
-        /// Creates a ternary heap out of given list of elements in linear time.
+        /// Creates a quaternary heap out of given list of elements in linear time.
         /// </summary>
         /// <param name="items">The list of items to build a heap from.</param>
         /// <param name="comparer">The comparer used to determine whether one object should be extracted from the heap earlier than the other one.</param>
-        public TernaryHeap(List<T> items, IComparer<T> comparer) : base(3, items, comparer)
+        public QuaternaryHeap(List<T> items, IComparer<T> comparer) : base(4, items, comparer)
         {
         }
     }

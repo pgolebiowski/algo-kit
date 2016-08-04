@@ -46,7 +46,7 @@
     <Compile Include="Collections\Heaps\BinomialTreeNode.cs" />
     <Compile Include="Collections\Heaps\DAryHeap.cs" />
     <Compile Include="Collections\Heaps\BinaryHeap.cs" />
-    <Compile Include="Collections\Heaps\TernaryHeap.cs" />
+    <Compile Include="Collections\Heaps\QuaternaryHeap.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
