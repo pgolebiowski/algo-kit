@@ -3,9 +3,9 @@
 namespace AlgoKit.Collections.Heaps
 {
     /// <summary>
-    /// Represents a heap-ordered complete binary tree.
+    /// Represents an implicit heap-ordered complete binary tree.
     /// </summary>
-    public class BinaryHeap<T> : DAryHeap<T>
+    public class BinaryHeap<T> : ArrayHeap<T>
     {
         /// <summary>
         /// Creates an empty binary heap.

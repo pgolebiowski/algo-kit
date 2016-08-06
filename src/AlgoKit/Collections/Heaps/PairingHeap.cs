@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AlgoKit.Collections.Heaps
 {
@@ -11,19 +8,26 @@ namespace AlgoKit.Collections.Heaps
     /// binomial trees and splay trees.
     /// </summary>
     /// <typeparam name="T">Specifies the element type of the pairing heap.</typeparam>
-    public class PairingHeap<T>
+    public class PairingHeap<T> : IHeap<T, PairingHeapNode<T>>
     {
-        private PairingHeapNode<T> root;
-        private readonly IComparer<T> comparer;
-
         /// <summary>
         /// Creates an empty pairing heap.
         /// </summary>
         /// <param name="comparer">The comparer used to determine whether one object should be extracted from the heap earlier than the other one.</param>
         public PairingHeap(IComparer<T> comparer)
         {
-            this.comparer = comparer;
+            this.Comparer = comparer;
         }
+
+        /// <summary>
+        /// Gets the root node of the pairing heap.
+        /// </summary>
+        public PairingHeapNode<T> Root { get; private set; }
+
+        /// <summary>
+        /// Gets the <see cref="IComparer{T}"/> for the pairing heap.
+        /// </summary>
+        public IComparer<T> Comparer { get; }
 
         /// <summary>
         /// Gets the number of elements contained in the heap.
@@ -38,12 +42,12 @@ namespace AlgoKit.Collections.Heaps
         /// <summary>
         /// Gets the top element of the heap.
         /// </summary>
-        public PairingHeapNode<T> Top()
+        public T Top()
         {
             if (this.IsEmpty)
                 throw new InvalidOperationException("The heap is empty.");
 
-            return this.root;
+            return this.Root.Value;
         }
 
         /// <summary>
@@ -55,7 +59,7 @@ namespace AlgoKit.Collections.Heaps
             // We combine all these trees by pairwise merging to form one new tree.
             // However, the order in which we combine the trees is important.
 
-            return this.Remove(this.root);
+            return this.Remove(this.Root);
         }
 
         /// <summary>
@@ -66,7 +70,7 @@ namespace AlgoKit.Collections.Heaps
             // Create a one-node tree for the specified item and merge it with this heap.
             var tree = new PairingHeapNode<T>(item);
 
-            this.root = this.Merge(this.root, tree);
+            this.Root = this.Merge(this.Root, tree);
             ++this.Count;
 
             return tree;
@@ -82,10 +86,10 @@ namespace AlgoKit.Collections.Heaps
 
             var item = node.Value;
 
-            if (node == this.root)
+            if (node == this.Root)
             {
                 // Simplified case when we remove the root
-                this.root = this.MergePairwisely(node.Child);
+                this.Root = this.MergePairwisely(node.Child);
             }
             else
             {
@@ -97,7 +101,7 @@ namespace AlgoKit.Collections.Heaps
                 // The only part left is the child of the node. As stated previously,
                 // we will simply merge it with the entire heap.
 
-                this.root = this.Merge(this.root, this.MergePairwisely(node.Child));
+                this.Root = this.Merge(this.Root, this.MergePairwisely(node.Child));
             }
 
             --this.Count;
@@ -111,7 +115,7 @@ namespace AlgoKit.Collections.Heaps
         /// <param name="value">The new value for the node.</param>
         public void Update(PairingHeapNode<T> node, T value)
         {
-            var relation = this.comparer.Compare(value, node.Value);
+            var relation = this.Comparer.Compare(value, node.Value);
             node.Value = value;
 
             // If the new value is considered equal to the previous value, there is no need
@@ -124,7 +128,7 @@ namespace AlgoKit.Collections.Heaps
             // heap is the same no matter whether we increase or decrease the key, the
             // way of handling the root differs.
 
-            if (node == this.root)
+            if (node == this.Root)
             {
                 // In case the root gets a value that should be extracted from the heap even
                 // earlier, there is also no need to fix anything.
@@ -145,7 +149,7 @@ namespace AlgoKit.Collections.Heaps
             // list of siblings and to merge it with the root.
 
             node.RemoveFromListOfSiblings();
-            this.root = this.Merge(this.root, node);
+            this.Root = this.Merge(this.Root, node);
         }
 
         /// <summary>
@@ -155,7 +159,7 @@ namespace AlgoKit.Collections.Heaps
         public void Merge(PairingHeap<T> other)
         {
             this.Count += other.Count;
-            this.root = this.Merge(this.root, other.root);
+            this.Root = this.Merge(this.Root, other.Root);
         }
 
         /// <summary>
@@ -181,7 +185,7 @@ namespace AlgoKit.Collections.Heaps
 
             PairingHeapNode<T> parent, child;
 
-            if (this.comparer.Compare(a.Value, b.Value) < 0)
+            if (this.Comparer.Compare(a.Value, b.Value) < 0)
             {
                 parent = a;
                 child = b;

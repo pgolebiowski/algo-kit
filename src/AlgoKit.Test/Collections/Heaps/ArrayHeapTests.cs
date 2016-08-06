@@ -7,16 +7,16 @@ using NUnit.Framework;
 namespace AlgoKit.Test.Collections.Heaps
 {
     [TestFixture]
-    public class DAryHeapTests
+    public class ArrayHeapTests
     {
-        private static DAryHeap<int> CreateHeap(int arity)
+        private static ArrayHeap<int> CreateHeap(int arity)
         {
             return CreateHeap(arity, new List<int>());
         }
 
-        private static DAryHeap<int> CreateHeap(int arity, IList<int> collection)
+        private static ArrayHeap<int> CreateHeap(int arity, IList<int> collection)
         {
-            return new DAryHeap<int>(arity, new List<int>(collection), Comparer<int>.Default);
+            return new ArrayHeap<int>(arity, new List<int>(collection), Comparer<int>.Default);
         }
         
         public static IEnumerable<int> GetAritiesToTest()
@@ -37,7 +37,7 @@ namespace AlgoKit.Test.Collections.Heaps
         {
             Assert.Throws<ArgumentNullException>(() =>
             {
-                var heap = new DAryHeap<int>(2, null, Comparer<int>.Default);
+                var heap = new ArrayHeap<int>(2, null, Comparer<int>.Default);
             });
         }
 
@@ -46,12 +46,12 @@ namespace AlgoKit.Test.Collections.Heaps
         {
             Assert.Throws<ArgumentOutOfRangeException>(() =>
             {
-                var heap = new DAryHeap<int>(0, Comparer<int>.Default);
+                var heap = new ArrayHeap<int>(0, Comparer<int>.Default);
             });
 
             Assert.DoesNotThrow(() =>
             {
-                var heap = new DAryHeap<int>(1, Comparer<int>.Default);
+                var heap = new ArrayHeap<int>(1, Comparer<int>.Default);
             });
         }
 
@@ -60,7 +60,7 @@ namespace AlgoKit.Test.Collections.Heaps
         {
             Assert.Throws<ArgumentNullException>(() =>
             {
-                var heap = new DAryHeap<int>(2, null);
+                var heap = new ArrayHeap<int>(2, null);
             });
         }
         
@@ -138,7 +138,7 @@ namespace AlgoKit.Test.Collections.Heaps
 
             var dictionary = items.ToDictionary(x => x.Key, x => x.Value);
 
-            var heap = new DAryHeap<PairWithPriority<int, string>>(arity, items, Comparer<PairWithPriority<int, string>>.Default);
+            var heap = new ArrayHeap<PairWithPriority<int, string>>(arity, items, Comparer<PairWithPriority<int, string>>.Default);
 
             Func<int, int> keyAt = i => heap.ElementAt(i).Key;
             Func<int, string> valueAt = i => heap.ElementAt(i).Value;

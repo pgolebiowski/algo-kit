@@ -3,9 +3,9 @@
 namespace AlgoKit.Collections.Heaps
 {
     /// <summary>
-    /// Represents a heap-ordered complete quaternary tree.
+    /// Represents an implicit heap-ordered complete quaternary tree.
     /// </summary>
-    public class QuaternaryHeap<T> : DAryHeap<T>
+    public class QuaternaryHeap<T> : ArrayHeap<T>
     {
         /// <summary>
         /// Creates an empty quaternary heap.

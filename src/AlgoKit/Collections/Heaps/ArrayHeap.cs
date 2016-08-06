@@ -7,9 +7,9 @@ using System.Runtime.CompilerServices;
 namespace AlgoKit.Collections.Heaps
 {
     /// <summary>
-    /// Represents a heap-ordered complete d-ary tree.
+    /// Represents an implicit heap-ordered complete d-ary tree.
     /// </summary>
-    public class DAryHeap<T> : ICollection<T>
+    public class ArrayHeap<T> : ICollection<T>
     {
         private readonly List<T> elements;
         private readonly IComparer<T> comparer;
@@ -19,7 +19,7 @@ namespace AlgoKit.Collections.Heaps
         /// </summary>
         /// <param name="arity">The arity of the heap.</param>
         /// <param name="comparer">The comparer used to determine whether one object should be extracted from the heap earlier than the other one.</param>
-        public DAryHeap(int arity, IComparer<T> comparer) : this(arity, new List<T>(), comparer)
+        public ArrayHeap(int arity, IComparer<T> comparer) : this(arity, new List<T>(), comparer)
         {
         }
 
@@ -29,7 +29,7 @@ namespace AlgoKit.Collections.Heaps
         /// <param name="arity">The arity of the heap.</param>
         /// <param name="items">The list of items to build a heap from.</param>
         /// <param name="comparer">The comparer used to determine whether one object should be extracted from the heap earlier than the other one.</param>
-        public DAryHeap(int arity, List<T> items, IComparer<T> comparer)
+        public ArrayHeap(int arity, List<T> items, IComparer<T> comparer)
         {
             if (arity < 1)
                 throw new ArgumentOutOfRangeException($"Expected arity to be at least 1, but was {arity}.");
@@ -193,7 +193,7 @@ namespace AlgoKit.Collections.Heaps
         /// <summary>
         /// Merges this heap with the elements of another heap.
         /// </summary>
-        public void Merge(DAryHeap<T> other)
+        public void Merge(ArrayHeap<T> other)
         {
             this.elements.AddRange(other.elements);
             this.Heapify();

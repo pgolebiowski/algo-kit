@@ -20,7 +20,7 @@ namespace AlgoKit.Test.Collections.Heaps
             foreach (var element in collection)
             {
                 heap.Add(element);
-                Assert.AreEqual(element, heap.Top().Value);
+                Assert.AreEqual(element, heap.Top());
             }
         }
 
@@ -55,7 +55,7 @@ namespace AlgoKit.Test.Collections.Heaps
             foreach (var item in items.OrderBy(x => x))
             {
                 Assert.AreEqual(false, heap.IsEmpty);
-                Assert.AreEqual(item, heap.Top().Value);
+                Assert.AreEqual(item, heap.Top());
 
                 Assert.AreEqual(count, heap.Count);
                 Assert.AreEqual(item, heap.Pop());
