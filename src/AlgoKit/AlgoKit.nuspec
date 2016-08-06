@@ -9,7 +9,7 @@
     <projectUrl>https://github.com/pgolebiowski/algo-kit</projectUrl>
     <licenseUrl>https://github.com/pgolebiowski/algo-kit/blob/master/LICENSE</licenseUrl>
 
-    <description>.</description>
+    <description>Top-quality toolkit of algorithms and data structures for .NET developers.</description>
 
     <copyright>Copyright 2016</copyright>
     <tags>algorithm structures heap tree binomial pairing</tags>
