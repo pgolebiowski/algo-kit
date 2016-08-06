@@ -156,7 +156,7 @@ namespace AlgoKit.Collections.Heaps
         }
 
         /// <summary>
-        /// Removes the first occurrence of a speficic object from the heap.
+        /// Removes the first occurrence of a specific object from the heap.
         /// </summary>
         /// <param name="item">The object to remove from the heap. The value can be null for reference types.</param>
         public bool Remove(T item)

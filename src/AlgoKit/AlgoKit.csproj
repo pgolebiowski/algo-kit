@@ -46,6 +46,8 @@
     <Compile Include="Collections\Heaps\BinomialTreeNode.cs" />
     <Compile Include="Collections\Heaps\DAryHeap.cs" />
     <Compile Include="Collections\Heaps\BinaryHeap.cs" />
+    <Compile Include="Collections\Heaps\PairingHeap.cs" />
+    <Compile Include="Collections\Heaps\PairingHeapNode.cs" />
     <Compile Include="Collections\Heaps\QuaternaryHeap.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
