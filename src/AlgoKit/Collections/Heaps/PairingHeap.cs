@@ -62,6 +62,9 @@ namespace AlgoKit.Collections.Heaps
             // We combine all these trees by pairwise merging to form one new tree.
             // However, the order in which we combine the trees is important.
 
+            if (this.IsEmpty)
+                throw new InvalidOperationException("The heap is empty.");
+
             return this.Remove(this.Root);
         }
 
@@ -135,32 +138,34 @@ namespace AlgoKit.Collections.Heaps
             if (relation == 0)
                 return;
 
-            // Although the algorithm for updating an arbitrary node in the middle of the
-            // heap is the same no matter whether we increase or decrease the key, the
-            // way of handling the root differs.
-
-            if (node == this.Root)
+            if (relation < 0)
             {
                 // In case the root gets a value that should be extracted from the heap even
                 // earlier, there is also no need to fix anything.
 
-                if (relation < 0)
+                if (node == this.Root)
                     return;
 
-                // Otherwise, the root needs to go somewhere down. It needs to be replaced
-                // with one of its children. Thus, simply perform pop and add the new value.
-
-                this.Pop();
-                this.Add(value);
+                node.RemoveFromListOfSiblings();
+                this.Root = this.Merge(this.Root, node);
                 return;
             }
 
-            // Here, we're handling the case when the node to be updated is somewhere
-            // in the middle of the heap. The idea is to simply cut the node from its
-            // list of siblings and to merge it with the root.
+            // In case the node was updated with a greater value, it is in the right spot.
+            // However, the heap property might be violated for all its children. For that
+            // reason we will merge them pairwisely to form a single tree and merge this
+            // tree with our heap.
 
-            node.RemoveFromListOfSiblings();
-            this.Root = this.Merge(this.Root, node);
+            var child = node.Child;
+
+            if (child == null)
+                return;
+
+            node.Child = null;
+            child.Previous = null; // TODO: this line might be not needed
+
+            var tree = this.MergePairwisely(child);
+            this.Root = this.Merge(this.Root, tree);
         }
 
         /// <summary>

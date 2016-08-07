@@ -64,5 +64,57 @@ namespace AlgoKit.Test.Collections.Heaps
 
             Assert.AreEqual(true, heap.IsEmpty);
         }
+
+        private class HandleValuePair
+        {
+            public HandleValuePair(PairingHeapNode<int> handle, int value)
+            {
+                this.Handle = handle;
+                this.Value = value;
+            }
+
+            public PairingHeapNode<int> Handle { get; }
+            public int Value { get; set; }
+        }
+
+        [TestCase(1, 1)]
+        [TestCase(1, 2)]
+        [TestCase(1, 3)]
+        [TestCase(3, 3)]
+        [TestCase(8, 10)]
+        [TestCase(10, int.MaxValue)]
+        public void Elements_should_be_updated_correctly(int heapSize, int valueLimit)
+        {
+            for (var seed = 0; seed < 15; ++seed)
+            {
+                // Arrange
+                var heap = new PairingHeap<int>(Comparer<int>.Default);
+
+                var handles = new List<HandleValuePair>();
+                var random = new Random(seed);
+
+                for (var i = 0; i < heapSize; ++i)
+                {
+                    var value = random.Next(valueLimit);
+                    var handle = heap.Add(value);
+                    handles.Add(new HandleValuePair(handle, value));
+                }
+
+                // Act
+                for (var i = 0; i < 150000; ++i)
+                {
+                    var handleIndex = random.Next(0, heapSize);
+                    var newValue = random.Next(valueLimit);
+                    var handle = handles[handleIndex];
+
+                    heap.Update(handle.Handle, newValue);
+                    handles[handleIndex].Value = newValue;
+
+                    // Assert
+                    var top = handles.Select(x => x.Value).Min();
+                    Assert.AreEqual(top, heap.Top());
+                }
+            }
+        }
     }
 }
