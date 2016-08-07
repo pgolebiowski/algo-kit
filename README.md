@@ -10,11 +10,10 @@
 Yet another toolkit of algorithms and data structures for .NET developers. 
 
 ## Purpose
-The project has three main purposes:
+The project has two main purposes:
 
 1. Provide tools that are handy, intuitive, and highly effective in practice.
-2. Deliver excellent performance of implementations.
-3. Write heavily documented and carefully designed code so that people can easily understand it and learn from it.
+2. Write heavily documented and carefully designed code so that people can easily understand it and learn from it.
 
 By fulfilling these purposes, AlgoKit is intended to stand out from the gazillion of other libraries as a solution of top quality.
 
