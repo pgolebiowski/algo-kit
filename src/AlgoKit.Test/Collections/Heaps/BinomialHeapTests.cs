@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,7 +16,7 @@ namespace AlgoKit.Test.Collections.Heaps
         public void Should_properly_detect_top_element()
         {
             // Arrange
-            var heap = new BinomialHeap<int>();
+            var heap = new BinomialHeap<int>(Comparer<int>.Default);
             var collection = Utils.GenerateList(50000, -5000, 5000).OrderByDescending(x => x);
 
             // Act && Assert
@@ -29,7 +31,7 @@ namespace AlgoKit.Test.Collections.Heaps
         public void Should_not_allow_getting_or_extracting_top_from_empty_heap()
         {
             // Arrange
-            var heap = new BinomialHeap<int>();
+            var heap = new BinomialHeap<int>(Comparer<int>.Default);
 
             // Act & Assert
             Assert.Throws<InvalidOperationException>(() => heap.Top());
@@ -40,7 +42,7 @@ namespace AlgoKit.Test.Collections.Heaps
         public void Elements_should_be_added_and_popped_correctly()
         {
             // Arrange
-            var heap = new BinomialHeap<int>();
+            var heap = new BinomialHeap<int>(Comparer<int>.Default);
             var items = Utils.GenerateList(10000, -1000, 1000);
             var count = 0;
 

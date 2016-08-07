@@ -41,9 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Collections\Heaps\BinomialHeap.cs" />
-    <Compile Include="Collections\Heaps\BinomialTree.cs" />
-    <Compile Include="Collections\Heaps\BinomialTreeCollection.cs" />
-    <Compile Include="Collections\Heaps\BinomialTreeNode.cs" />
+    <Compile Include="Collections\Heaps\BinomialHeapNode.cs" />
     <Compile Include="Collections\Heaps\ArrayHeap.cs" />
     <Compile Include="Collections\Heaps\BinaryHeap.cs" />
     <Compile Include="Collections\Heaps\IHeap.cs" />

@@ -13,7 +13,10 @@ namespace AlgoKit.Collections.Heaps
         /// <summary>
         /// Creates an empty pairing heap.
         /// </summary>
-        /// <param name="comparer">The comparer used to determine whether one object should be extracted from the heap earlier than the other one.</param>
+        /// <param name="comparer">
+        /// The comparer used to determine whether one object should be extracted
+        /// from the heap earlier than the other one.
+        /// </param>
         public PairingHeap(IComparer<T> comparer)
         {
             this.Comparer = comparer;
@@ -206,7 +209,7 @@ namespace AlgoKit.Collections.Heaps
             child.Previous = parent;
             parent.Child = child;
 
-            // There new root has no siblings, so adjust the pointers accordingly.
+            // Roots have no siblings, so adjust the pointers accordingly.
             parent.Next = null;
             parent.Previous = null;
 
