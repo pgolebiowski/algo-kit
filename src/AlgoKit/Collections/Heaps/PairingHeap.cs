@@ -8,7 +8,7 @@ namespace AlgoKit.Collections.Heaps
     /// binomial trees and splay trees.
     /// </summary>
     /// <typeparam name="T">Specifies the element type of the pairing heap.</typeparam>
-    public class PairingHeap<T> : IHeap<T, PairingHeapNode<T>>
+    public class PairingHeap<T> : IAddressableHeap<T, PairingHeapNode<T>, PairingHeap<T>>
     {
         /// <summary>
         /// Creates an empty pairing heap.
@@ -63,6 +63,14 @@ namespace AlgoKit.Collections.Heaps
             // However, the order in which we combine the trees is important.
 
             return this.Remove(this.Root);
+        }
+
+        /// <summary>
+        /// Adds an object to the heap.
+        /// </summary>
+        void IHeap<T>.Add(T value)
+        {
+            this.Add(value);
         }
 
         /// <summary>
@@ -156,10 +164,10 @@ namespace AlgoKit.Collections.Heaps
         }
 
         /// <summary>
-        /// Merges this heap with another pairing heap.
+        /// Merges this heap with another heap, destroying it.
         /// </summary>
         /// <param name="other">The heap to be merged with this heap.</param>
-        public void Merge(PairingHeap<T> other)
+        public void Meld(PairingHeap<T> other)
         {
             this.Count += other.Count;
             this.Root = this.Merge(this.Root, other.Root);

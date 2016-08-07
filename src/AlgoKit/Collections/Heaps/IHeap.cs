@@ -2,7 +2,11 @@
 
 namespace AlgoKit.Collections.Heaps
 {
-    public interface IHeap<TValue, THandle>
+    /// <summary>
+    /// Represents a specialized tree-based data structure capable
+    /// of retrieving the top element efficiently.
+    /// </summary>
+    public interface IHeap<TValue>
     {
         IComparer<TValue> Comparer { get; }
 
@@ -14,10 +18,6 @@ namespace AlgoKit.Collections.Heaps
 
         TValue Pop();
 
-        THandle Add(TValue value);
-
-        TValue Remove(THandle handle);
-
-        void Update(THandle handle, TValue value);
+        void Add(TValue value);
     }
 }

@@ -9,10 +9,9 @@ namespace AlgoKit.Collections.Heaps
     /// <summary>
     /// Represents an implicit heap-ordered complete d-ary tree.
     /// </summary>
-    public class ArrayHeap<T> : ICollection<T>
+    public class ArrayHeap<T> : ICollection<T>, IHeap<T>
     {
         private readonly List<T> elements;
-        private readonly IComparer<T> comparer;
 
         /// <summary>
         /// Creates an empty d-ary heap.
@@ -42,11 +41,16 @@ namespace AlgoKit.Collections.Heaps
 
             this.Arity = arity;
             this.elements = items;
-            this.comparer = comparer;
+            this.Comparer = comparer;
 
             if (this.Count > 1)
                 this.Heapify();
         }
+
+        /// <summary>
+        /// Gets the <see cref="IComparer{T}"/> for the heap.
+        /// </summary>
+        public IComparer<T> Comparer { get; }
 
         /// <summary>
         /// Gets the arity of the heap.
@@ -213,7 +217,7 @@ namespace AlgoKit.Collections.Heaps
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private bool ShouldBeExtractedEarlier(T first, T second)
         {
-            return this.comparer.Compare(first, second) < 0;
+            return this.Comparer.Compare(first, second) < 0;
         }
 
         /// <summary>
@@ -314,7 +318,7 @@ namespace AlgoKit.Collections.Heaps
                 while (++i < childrenIndexesLimit)
                 {
                     var child = this.elements[i];
-                    if (this.comparer.Compare(child, topChild) < 0)
+                    if (this.Comparer.Compare(child, topChild) < 0)
                     {
                         topChildIndex = i;
                         topChild = child;
@@ -323,10 +327,10 @@ namespace AlgoKit.Collections.Heaps
 
                 // In case no child needs to be extracted earlier than the current node,
                 // there is nothing more to do - the right spot was found.
-                if (this.comparer.Compare(toMove, topChild) <= 0)
+                if (this.Comparer.Compare(toMove, topChild) <= 0)
                     break;
 
-                // Move the top value up by one node and now investigate the
+                // Move the top child up by one node and now investigate the
                 // node that was considered to be the top child (recursive).
                 this.elements[index] = topChild;
                 index = topChildIndex;

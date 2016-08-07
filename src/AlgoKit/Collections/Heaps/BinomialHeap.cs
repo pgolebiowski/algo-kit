@@ -1,11 +1,5 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AlgoKit.Collections.Heaps
 {
@@ -13,7 +7,7 @@ namespace AlgoKit.Collections.Heaps
     /// Represents a forest of uniquely-sized, heap-ordered binomial trees
     /// in a child-sibling form (binary tree).
     /// </summary>
-    public class BinomialHeap<T> : IHeap<T, BinomialHeapNode<T>>
+    public class BinomialHeap<T> : IAddressableHeap<T, BinomialHeapNode<T>, BinomialHeap<T>>
     {
         private readonly BinomialHeapNode<T>[] roots;
         private BinomialHeapNode<T> top;
@@ -89,6 +83,14 @@ namespace AlgoKit.Collections.Heaps
         /// <summary>
         /// Adds an object to the heap.
         /// </summary>
+        void IHeap<T>.Add(T value)
+        {
+            this.Add(value);
+        }
+
+        /// <summary>
+        /// Adds an object to the heap.
+        /// </summary>
         public BinomialHeapNode<T> Add(T item)
         {
             // Create a one-node tree for the specified item and perform
@@ -105,9 +107,10 @@ namespace AlgoKit.Collections.Heaps
         /// <summary>
         /// Removes an arbitrary node from the heap.
         /// </summary>
+        /// <param name="node">The node to be removed.</param>
         public T Remove(BinomialHeapNode<T> node)
         {
-            // To delete an node from the heap we will move it up to the top and
+            // To delete a node from the heap we will move it up to the top and
             // then simply pop it. Instead of assigning some 'hacky' values like 
             // negative infinity, we will temporarily use a fake comparer that always
             // says the first parameter is smaller.
@@ -140,6 +143,17 @@ namespace AlgoKit.Collections.Heaps
                 this.MoveUp(node);
             else if (relation > 0)
                 this.MoveDown(node);
+        }
+
+        /// <summary>
+        /// Merges this heap with another heap, destroying it.
+        /// </summary>
+        /// <param name="other">The heap to be merged with this heap.</param>
+        public void Meld(BinomialHeap<T> other)
+        {
+            this.Count += other.Count;
+            foreach (var root in other.roots)
+                this.MakeRoot(root);
         }
 
         /// <summary>
@@ -198,12 +212,36 @@ namespace AlgoKit.Collections.Heaps
         /// <param name="node">The node to be moved down.</param>
         private void MoveDown(BinomialHeapNode<T> node)
         {
-            // We want to move one node down in the binomial tree. However,
+            // We want to move one node down in a binomial tree. However,
             // what we have is a binary tree. We need to go to the first child
             // and then iterate all the way right (to check all siblings). Our goal
             // is to find the child that should be extracted first from the heap.
+            // Repeat the process until the heap property is restored.
 
-            throw new NotImplementedException();
+            // Check if the current node should really be extracted first, or maybe
+            // one of its children should be extracted earlier.
+
+            var topChild = node.Left;
+
+            // In case the current node has no children, there is nothing more to do.
+            // It cannot be moved down any further.
+            if (topChild == null)
+                return;
+
+            // There are some children, so browse them and find the top one.
+            for (var child = topChild.Right; child != null; child = child.Right)
+                if (this.Comparer.Compare(child.Value, topChild.Value) < 0)
+                    topChild = child;
+
+            // In case no child needs to be extracted earlier than the current node,
+            // there is nothing more to do - the right spot was found.
+            if (this.Comparer.Compare(node.Value, topChild.Value) <= 0)
+                return;
+
+            // Move the top child up by one node and now investigate the
+            // node that was considered to be the top child (recursive).
+            this.SwapWithParent(topChild, node);
+            this.MoveDown(topChild);
         }
 
         /// <summary>
