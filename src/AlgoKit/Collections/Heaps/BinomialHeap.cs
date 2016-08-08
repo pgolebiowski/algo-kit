@@ -142,7 +142,16 @@ namespace AlgoKit.Collections.Heaps
             if (relation < 0)
                 this.MoveUp(node);
             else if (relation > 0)
+            {
+                // If one of the roots is moved down (or it is not moved, but its value is 
+                // modified) then there is a chance that the top should be updated as well.
+                var isRootBeingUpdated = node.Parent == null;
+
                 this.MoveDown(node);
+
+                if (isRootBeingUpdated)
+                    this.UpdateTop();
+            }
         }
 
         /// <summary>
@@ -241,7 +250,8 @@ namespace AlgoKit.Collections.Heaps
             // Move the top child up by one node and now investigate the
             // node that was considered to be the top child (recursive).
             this.SwapWithParent(topChild, node);
-            this.MoveDown(topChild);
+
+            this.MoveDown(node);
         }
 
         /// <summary>
