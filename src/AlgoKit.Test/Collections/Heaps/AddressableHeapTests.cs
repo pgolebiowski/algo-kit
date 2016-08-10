@@ -10,6 +10,7 @@ namespace AlgoKit.Test.Collections.Heaps
     /// <summary>
     /// Tests for heaps that implement the IAddressableHeap interface.
     /// </summary>
+    [TestFixture(typeof(ArrayHeap<int>))]
     [TestFixture(typeof(PairingHeap<int>))]
     [TestFixture(typeof(BinomialHeap<int>))]
     public class AddressableHeapTests<THeap>

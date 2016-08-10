@@ -40,9 +40,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Collections\Heaps\ArrayHeap.cs" />
+    <Compile Include="Collections\Heaps\ArrayHeapNode.cs" />
     <Compile Include="Collections\Heaps\BinomialHeap.cs" />
     <Compile Include="Collections\Heaps\BinomialHeapNode.cs" />
-    <Compile Include="Collections\Heaps\ArrayHeap.cs" />
     <Compile Include="Collections\Heaps\BinaryHeap.cs" />
     <Compile Include="Collections\Heaps\IAddressableHeap.cs" />
     <Compile Include="Collections\Heaps\IHeap.cs" />

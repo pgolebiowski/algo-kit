@@ -36,7 +36,7 @@
         /// Initializes a new instance of the <see cref="BinomialHeapNode{T}"/> class,
         /// containing the specified value.
         /// </summary>
-        /// <param name="value">The value to contain in the <see cref="PairingHeapNode{T}"/>.</param>
+        /// <param name="value">The value to contain in the <see cref="BinomialHeapNode{T}"/>.</param>
         public BinomialHeapNode(T value)
         {
             this.Value = value;
