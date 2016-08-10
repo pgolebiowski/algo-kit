@@ -5,7 +5,7 @@
     /// of its siblings and a parent of some other node.
     /// </summary>
     /// <typeparam name="T">Specifies the element type of the pairing heap.</typeparam>
-    public class PairingHeapNode<T>
+    public class PairingHeapNode<T> : IHeapHandle<T>
     {
         /// <summary>
         /// Gets the value contained in the node.

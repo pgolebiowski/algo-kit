@@ -7,17 +7,16 @@ using NUnit.Framework;
 
 namespace AlgoKit.Test.Collections.Heaps
 {
-    /// <summary>
-    /// Tests for heaps that implement the IAddressableHeap interface.
-    /// </summary>
-    [TestFixture(typeof(ArrayHeap<int>))]
-    [TestFixture(typeof(PairingHeap<int>))]
-    [TestFixture(typeof(BinomialHeap<int>))]
-    public class AddressableHeapTests<THeap>
+    [TestFixture(typeof(ArrayHeap<int>), typeof(ArrayHeapNode<int>))]
+    [TestFixture(typeof(BinomialHeap<int>), typeof(BinomialHeapNode<int>))]
+    [TestFixture(typeof(PairingHeap<int>), typeof(PairingHeapNode<int>))]
+    public class HeapTests<THeap, THandle>
+        where THeap : BaseHeap<int, THandle, THeap>
+        where THandle : class, IHeapHandle<int>
     {
-        private static dynamic CreateHeapInstance()
+        private static THeap CreateHeapInstance()
         {
-            return Activator.CreateInstance(typeof(THeap), Comparer<int>.Default);
+            return (THeap) Activator.CreateInstance(typeof(THeap), Comparer<int>.Default);
         }
 
         public class HeapConfiguration

@@ -1,14 +1,16 @@
-﻿namespace AlgoKit.Test.Collections.Heaps
+﻿using AlgoKit.Collections.Heaps;
+
+namespace AlgoKit.Test.Collections.Heaps
 {
     public class HandleValuePair
     {
-        public HandleValuePair(dynamic handle, int value)
+        public HandleValuePair(IHeapHandle<int> handle, int value)
         {
             this.Handle = handle;
             this.Value = value;
         }
 
-        public dynamic Handle { get; }
+        public IHeapHandle<int> Handle { get; }
         public int Value { get; set; }
     }
 }

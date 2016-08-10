@@ -8,8 +8,10 @@ namespace AlgoKit.Collections.Heaps
     /// binomial trees and splay trees.
     /// </summary>
     /// <typeparam name="T">Specifies the element type of the pairing heap.</typeparam>
-    public class PairingHeap<T> : IAddressableHeap<T, PairingHeapNode<T>, PairingHeap<T>>
+    public class PairingHeap<T> : BaseHeap<T, PairingHeapNode<T>, PairingHeap<T>>
     {
+        private int count;
+
         /// <summary>
         /// Creates an empty pairing heap.
         /// </summary>
@@ -28,24 +30,14 @@ namespace AlgoKit.Collections.Heaps
         public PairingHeapNode<T> Root { get; private set; }
 
         /// <summary>
-        /// Gets the <see cref="IComparer{T}"/> for the pairing heap.
-        /// </summary>
-        public IComparer<T> Comparer { get; }
-
-        /// <summary>
         /// Gets the number of elements contained in the heap.
         /// </summary>
-        public int Count { get; private set; }
-
-        /// <summary>
-        /// Returns true if the heap is empty, false otherwise.
-        /// </summary>
-        public bool IsEmpty => this.Count == 0;
+        public override int Count => this.count;
 
         /// <summary>
         /// Gets the top element of the heap.
         /// </summary>
-        public T Top()
+        public override T Top()
         {
             if (this.IsEmpty)
                 throw new InvalidOperationException("The heap is empty.");
@@ -56,7 +48,7 @@ namespace AlgoKit.Collections.Heaps
         /// <summary>
         /// Returns the top element after removing it from the heap.
         /// </summary>
-        public T Pop()
+        public override T Pop()
         {
             // Removing the root leaves us with a collection of heap-ordered trees,
             // We combine all these trees by pairwise merging to form one new tree.
@@ -71,21 +63,13 @@ namespace AlgoKit.Collections.Heaps
         /// <summary>
         /// Adds an object to the heap.
         /// </summary>
-        void IHeap<T>.Add(T value)
-        {
-            this.Add(value);
-        }
-
-        /// <summary>
-        /// Adds an object to the heap.
-        /// </summary>
-        public PairingHeapNode<T> Add(T item)
+        public override PairingHeapNode<T> Add(T item)
         {
             // Create a one-node tree for the specified item and merge it with this heap.
             var tree = new PairingHeapNode<T>(item);
 
             this.Root = this.Merge(this.Root, tree);
-            ++this.Count;
+            ++this.count;
 
             return tree;
         }
@@ -93,7 +77,7 @@ namespace AlgoKit.Collections.Heaps
         /// <summary>
         /// Removes an arbitrary node from the heap.
         /// </summary>
-        public T Remove(PairingHeapNode<T> node)
+        public override T Remove(PairingHeapNode<T> node)
         {
             // Remove the node from its list of siblings. Merge all its children to form
             // a new tree and merge that tree with the root.
@@ -118,7 +102,7 @@ namespace AlgoKit.Collections.Heaps
                 this.Root = this.Merge(this.Root, this.MergePairwisely(node.Child));
             }
 
-            --this.Count;
+            --this.count;
             return item;
         }
 
@@ -127,7 +111,7 @@ namespace AlgoKit.Collections.Heaps
         /// </summary>
         /// <param name="node">The node to update.</param>
         /// <param name="value">The new value for the node.</param>
-        public void Update(PairingHeapNode<T> node, T value)
+        public override void Update(PairingHeapNode<T> node, T value)
         {
             var relation = this.Comparer.Compare(value, node.Value);
             node.Value = value;
@@ -172,9 +156,9 @@ namespace AlgoKit.Collections.Heaps
         /// Merges this heap with another heap, destroying it.
         /// </summary>
         /// <param name="other">The heap to be merged with this heap.</param>
-        public void Meld(PairingHeap<T> other)
+        public override void Meld(PairingHeap<T> other)
         {
-            this.Count += other.Count;
+            this.count += other.count;
             this.Root = this.Merge(this.Root, other.Root);
         }
 

@@ -8,7 +8,7 @@ namespace AlgoKit.Collections.Heaps
     /// <summary>
     /// Represents an implicit heap-ordered complete d-ary tree, stored as an array.
     /// </summary>
-    public class ArrayHeap<T> : IAddressableHeap<T, ArrayHeapNode<T>, ArrayHeap<T>>
+    public class ArrayHeap<T> : BaseHeap<T, ArrayHeapNode<T>, ArrayHeap<T>>
     {
         private readonly List<ArrayHeapNode<T>> nodes;
 
@@ -55,11 +55,6 @@ namespace AlgoKit.Collections.Heaps
         }
 
         /// <summary>
-        /// Gets the <see cref="IComparer{T}"/> for the heap.
-        /// </summary>
-        public IComparer<T> Comparer { get; }
-
-        /// <summary>
         /// Gets the arity of the heap.
         /// </summary>
         public int Arity { get; }
@@ -67,17 +62,12 @@ namespace AlgoKit.Collections.Heaps
         /// <summary>
         /// Gets the number of elements contained in the heap.
         /// </summary>
-        public int Count => this.nodes.Count;
-
-        /// <summary>
-        /// Returns true if the heap is empty, false otherwise.
-        /// </summary>
-        public bool IsEmpty => this.nodes.Count == 0;
+        public override int Count => this.nodes.Count;
 
         /// <summary>
         /// Gets the top element of the heap.
         /// </summary>
-        public T Top()
+        public override T Top()
         {
             if (this.IsEmpty)
                 throw new InvalidOperationException("The heap is empty.");
@@ -88,7 +78,7 @@ namespace AlgoKit.Collections.Heaps
         /// <summary>
         /// Returns the top element after removing it from the heap.
         /// </summary>
-        public T Pop()
+        public override T Pop()
         {
             if (this.IsEmpty)
                 throw new InvalidOperationException("The heap is empty.");
@@ -102,15 +92,7 @@ namespace AlgoKit.Collections.Heaps
         /// <summary>
         /// Adds an object to the heap.
         /// </summary>
-        void IHeap<T>.Add(T value)
-        {
-            this.Add(value);
-        }
-
-        /// <summary>
-        /// Adds an object to the heap.
-        /// </summary>
-        public ArrayHeapNode<T> Add(T value)
+        public override ArrayHeapNode<T> Add(T value)
         {
             // Add node at the end
             var node = new ArrayHeapNode<T>(value, this.Count);
@@ -125,7 +107,7 @@ namespace AlgoKit.Collections.Heaps
         /// Removes an arbitrary node from the heap.
         /// </summary>
         /// <param name="node">The node to remove from the heap.</param>
-        public T Remove(ArrayHeapNode<T> node)
+        public override T Remove(ArrayHeapNode<T> node)
         {
             // The idea is to replace the specified node by the very last
             // node and shorten the array by one.
@@ -160,7 +142,7 @@ namespace AlgoKit.Collections.Heaps
         /// </summary>
         /// <param name="node">The node to update.</param>
         /// <param name="value">The new value for the node.</param>
-        public void Update(ArrayHeapNode<T> node, T value)
+        public override void Update(ArrayHeapNode<T> node, T value)
         {
             var relation = this.Comparer.Compare(value, node.Value);
             node.Value = value;
@@ -183,7 +165,7 @@ namespace AlgoKit.Collections.Heaps
         /// <summary>
         /// Merges this heap with the elements of another heap.
         /// </summary>
-        public void Meld(ArrayHeap<T> other)
+        public override void Meld(ArrayHeap<T> other)
         {
             this.nodes.AddRange(other.nodes);
             this.Heapify();

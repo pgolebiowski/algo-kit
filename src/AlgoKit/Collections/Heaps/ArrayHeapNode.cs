@@ -4,7 +4,7 @@
     /// Represents a node of an <see cref="ArrayHeap{T}"/>.
     /// </summary>
     /// <typeparam name="T">Specifies the element type of the array heap.</typeparam>
-    public class ArrayHeapNode<T>
+    public class ArrayHeapNode<T> : IHeapHandle<T>
     {
         /// <summary>
         /// Gets the value contained in the node.

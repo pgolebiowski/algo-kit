@@ -7,11 +7,12 @@ namespace AlgoKit.Collections.Heaps
     /// Represents a forest of uniquely-sized, heap-ordered binomial trees
     /// in a child-sibling form (binary tree).
     /// </summary>
-    public class BinomialHeap<T> : IAddressableHeap<T, BinomialHeapNode<T>, BinomialHeap<T>>
+    public class BinomialHeap<T> : BaseHeap<T, BinomialHeapNode<T>, BinomialHeap<T>>
     {
         private readonly BinomialHeapNode<T>[] roots;
         private BinomialHeapNode<T> top;
         private IComparer<T> fakeComparer = Comparer<T>.Create((x, y) => -1);
+        private int count;
 
         /// <summary>
         /// Creates an empty binomial heap.
@@ -27,24 +28,14 @@ namespace AlgoKit.Collections.Heaps
         }
 
         /// <summary>
-        /// Gets the <see cref="IComparer{T}"/> for the binomial heap.
-        /// </summary>
-        public IComparer<T> Comparer { get; private set; }
-
-        /// <summary>
         /// Gets the number of elements contained in the heap.
         /// </summary>
-        public int Count { get; private set; }
-
-        /// <summary>
-        /// Returns true if the heap is empty, false otherwise.
-        /// </summary>
-        public bool IsEmpty => this.Count == 0;
+        public override int Count => this.count;
 
         /// <summary>
         /// Gets the top element of the heap.
         /// </summary>
-        public T Top()
+        public override T Top()
         {
             if (this.IsEmpty)
                 throw new InvalidOperationException("The heap is empty.");
@@ -55,7 +46,7 @@ namespace AlgoKit.Collections.Heaps
         /// <summary>
         /// Returns the top element after removing it from the heap.
         /// </summary>
-        public T Pop()
+        public override T Pop()
         {
             // Get the root with the top value and remove it from the collection
             // of binomial trees.
@@ -74,7 +65,7 @@ namespace AlgoKit.Collections.Heaps
             // The old top node is ready to be garbage collected (unless the user
             // owns a reference to it). Adjust the number of elements and update the top.
 
-            --this.Count;
+            --this.count;
             this.UpdateTop();
 
             return result;
@@ -83,15 +74,7 @@ namespace AlgoKit.Collections.Heaps
         /// <summary>
         /// Adds an object to the heap.
         /// </summary>
-        void IHeap<T>.Add(T value)
-        {
-            this.Add(value);
-        }
-
-        /// <summary>
-        /// Adds an object to the heap.
-        /// </summary>
-        public BinomialHeapNode<T> Add(T item)
+        public override BinomialHeapNode<T> Add(T item)
         {
             // Create a one-node tree for the specified item and perform
             // the usual merging of heaps.
@@ -99,7 +82,7 @@ namespace AlgoKit.Collections.Heaps
             var tree = new BinomialHeapNode<T>(item);
 
             this.MakeRoot(tree);
-            ++this.Count;
+            ++this.count;
 
             return tree;
         }
@@ -108,7 +91,7 @@ namespace AlgoKit.Collections.Heaps
         /// Removes an arbitrary node from the heap.
         /// </summary>
         /// <param name="node">The node to be removed.</param>
-        public T Remove(BinomialHeapNode<T> node)
+        public override T Remove(BinomialHeapNode<T> node)
         {
             // To delete a node from the heap we will move it up to the top and
             // then simply pop it. Instead of assigning some 'hacky' values like 
@@ -131,7 +114,7 @@ namespace AlgoKit.Collections.Heaps
         /// </summary>
         /// <param name="node">The node to update.</param>
         /// <param name="value">The new value for the node.</param>
-        public void Update(BinomialHeapNode<T> node, T value)
+        public override void Update(BinomialHeapNode<T> node, T value)
         {
             var relation = this.Comparer.Compare(value, node.Value);
             node.Value = value;
@@ -158,9 +141,9 @@ namespace AlgoKit.Collections.Heaps
         /// Merges this heap with another heap, destroying it.
         /// </summary>
         /// <param name="other">The heap to be merged with this heap.</param>
-        public void Meld(BinomialHeap<T> other)
+        public override void Meld(BinomialHeap<T> other)
         {
-            this.Count += other.Count;
+            this.count += other.count;
             foreach (var root in other.roots)
                 this.MakeRoot(root);
         }

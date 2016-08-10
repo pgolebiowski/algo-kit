@@ -42,12 +42,12 @@
   <ItemGroup>
     <Compile Include="Collections\Heaps\ArrayHeap.cs" />
     <Compile Include="Collections\Heaps\ArrayHeapNode.cs" />
+    <Compile Include="Collections\Heaps\BaseHeap.cs" />
     <Compile Include="Collections\Heaps\BinomialHeap.cs" />
     <Compile Include="Collections\Heaps\BinomialHeapNode.cs" />
     <Compile Include="Collections\Heaps\BinaryHeap.cs" />
-    <Compile Include="Collections\Heaps\IAddressableHeap.cs" />
     <Compile Include="Collections\Heaps\IHeap.cs" />
-    <Compile Include="Collections\Heaps\IMeldableHeap.cs" />
+    <Compile Include="Collections\Heaps\IHeapHandle.cs" />
     <Compile Include="Collections\Heaps\PairingHeap.cs" />
     <Compile Include="Collections\Heaps\PairingHeapNode.cs" />
     <Compile Include="Collections\Heaps\QuaternaryHeap.cs" />

@@ -5,7 +5,7 @@
     /// left-child right-sibling binary trees.
     /// </summary>
     /// <typeparam name="T">Specifies the element type of the binomial heap.</typeparam>
-    public class BinomialHeapNode<T>
+    public class BinomialHeapNode<T> : IHeapHandle<T>
     {
         /// <summary>
         /// Gets the value contained in the node.
