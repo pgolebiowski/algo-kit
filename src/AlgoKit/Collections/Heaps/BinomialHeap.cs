@@ -157,7 +157,8 @@ namespace AlgoKit.Collections.Heaps
 
             this.count += other.count;
             foreach (var root in other.roots)
-                this.MakeRoot(root);
+                if (root != null)
+                    this.MakeRoot(root);
         }
 
         /// <summary>

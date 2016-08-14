@@ -31,9 +31,9 @@ namespace AlgoKit.Test.Collections.Heaps
                 this.ValueLimit = valueLimit;
             }
 
-            public List<int> GenerateValues(Random random)
+            public List<int> GenerateValues(Random random, int? count = null)
             {
-                return Enumerable.Range(1, this.HeapSize)
+                return Enumerable.Range(1, count ?? this.HeapSize)
                     .Select(x => random.Next(this.ValueLimit))
                     .ToList();
             }
@@ -160,18 +160,25 @@ namespace AlgoKit.Test.Collections.Heaps
                 }
 
                 // Act & Assert
-                foreach (var value in values.OrderBy(x => x))
-                {
-                    Assert.AreEqual(false, heap.IsEmpty);
-                    Assert.AreEqual(value, heap.Top());
-
-                    Assert.AreEqual(count, heap.Count);
-                    Assert.AreEqual(value, heap.Pop());
-                    Assert.AreEqual(--count, heap.Count);
-                }
-
-                Assert.AreEqual(true, heap.IsEmpty);
+                this.Pop_until_empty(heap, values);
             }
+        }
+
+        private void Pop_until_empty(THeap heap, IReadOnlyCollection<int> values)
+        {
+            var count = values.Count;
+
+            foreach (var value in values.OrderBy(x => x))
+            {
+                Assert.AreEqual(false, heap.IsEmpty);
+                Assert.AreEqual(value, heap.Top());
+
+                Assert.AreEqual(count, heap.Count);
+                Assert.AreEqual(value, heap.Pop());
+                Assert.AreEqual(--count, heap.Count);
+            }
+
+            Assert.AreEqual(true, heap.IsEmpty);
         }
 
         [TestCaseSource(nameof(GetHeapConfigurations))]
@@ -294,6 +301,41 @@ namespace AlgoKit.Test.Collections.Heaps
                     Assert.True(heap.IsEmpty);
                     Assert.AreEqual(0, count);
                 }
+            }
+        }
+
+        [TestCaseSource(nameof(GetHeapConfigurations))]
+        public void Heaps_should_be_merged_correctly(HeapConfiguration conf)
+        {
+            // Merging for array heaps takes ages...
+            if (typeof(THeap) == typeof(ArrayHeap<int>))
+                return;
+
+            var iterations = conf.CalculateIterations(5000);
+            for (var seed = 0; seed < iterations; ++seed)
+            {
+                // Arrange
+                var random = new Random(seed);
+                var values1 = conf.GenerateValues(random);
+                var secondHeapSize = random.Next(conf.HeapSize/2, conf.HeapSize*2);
+                var values2 = conf.GenerateValues(random, secondHeapSize);
+
+                var heap1 = CreateHeapInstance();
+                var heap2 = CreateHeapInstance();
+
+                foreach (var value in values1)
+                    heap1.Add(value);
+
+                foreach (var value in values2)
+                    heap2.Add(value);
+
+                var mixedValues = values1.Concat(values2).ToList();
+
+                // Arrange
+                heap1.Meld(heap2);
+
+                // Assert
+                this.Pop_until_empty(heap1, mixedValues);
             }
         }
     }
