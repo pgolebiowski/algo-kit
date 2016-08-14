@@ -23,6 +23,9 @@ namespace AlgoKit.Collections.Heaps
         /// </param>
         public BinomialHeap(IComparer<T> comparer)
         {
+            if (comparer == null)
+                throw new ArgumentNullException(nameof(comparer));
+
             this.Comparer = comparer;
             this.roots = new BinomialHeapNode<T>[32];
         }
@@ -93,6 +96,9 @@ namespace AlgoKit.Collections.Heaps
         /// <param name="node">The node to be removed.</param>
         public override T Remove(BinomialHeapNode<T> node)
         {
+            if (node == null)
+                throw new ArgumentNullException(nameof(node));
+
             // To delete a node from the heap we will move it up to the top and
             // then simply pop it. Instead of assigning some 'hacky' values like 
             // negative infinity, we will temporarily use a fake comparer that always
@@ -116,6 +122,9 @@ namespace AlgoKit.Collections.Heaps
         /// <param name="value">The new value for the node.</param>
         public override void Update(BinomialHeapNode<T> node, T value)
         {
+            if (node == null)
+                throw new ArgumentNullException(nameof(node));
+
             var relation = this.Comparer.Compare(value, node.Value);
             node.Value = value;
 
@@ -143,6 +152,9 @@ namespace AlgoKit.Collections.Heaps
         /// <param name="other">The heap to be merged with this heap.</param>
         public override void Meld(BinomialHeap<T> other)
         {
+            if (other == null)
+                throw new ArgumentNullException(nameof(other));
+
             this.count += other.count;
             foreach (var root in other.roots)
                 this.MakeRoot(root);

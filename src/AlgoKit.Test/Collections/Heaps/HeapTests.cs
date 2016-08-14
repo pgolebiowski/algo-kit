@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using AlgoKit.Collections.Heaps;
 using MoreLinq;
 using NUnit.Framework;
@@ -49,6 +50,46 @@ namespace AlgoKit.Test.Collections.Heaps
         }
 
         private static int Top(IEnumerable<HandleValuePair> list) => list.Select(x => x.Value).Min();
+
+        [Test]
+        public void Should_not_allow_creating_a_heap_with_null_comparer()
+        {
+            Assert.Throws<ArgumentNullException>(() =>
+            {
+                try
+                {
+                    // ReSharper disable once UnusedVariable
+                    var heap = (THeap) Activator.CreateInstance(typeof(THeap), (IComparer<int>) null);
+                }
+                catch (TargetInvocationException e)
+                {
+                    throw e.InnerException;
+                }
+            });
+        }
+
+        [Test]
+        public void Should_not_allow_passing_null_handle_or_heap_as_a_parameter()
+        {
+            // Arrange
+            var heap = CreateHeapInstance();
+
+            var testDelegates = new TestDelegate[]
+            {
+                () => heap.Remove((IHeapHandle<int>)null),
+                () => heap.Remove(null),
+
+                () => heap.Meld((IHeap<int>)null),
+                () => heap.Meld(null),
+
+                () => heap.Update((IHeapHandle<int>)null, 0),
+                () => heap.Update(null, 0)
+            };
+
+            // Act & Assert
+            foreach (var testDelegate in testDelegates)
+                Assert.Throws<ArgumentNullException>(testDelegate);
+        }
 
         [TestCaseSource(nameof(GetHeapConfigurations))]
         public void Top_should_be_properly_maintained_after_addition(HeapConfiguration conf)

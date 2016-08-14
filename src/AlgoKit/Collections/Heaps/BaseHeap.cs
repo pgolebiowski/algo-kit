@@ -35,6 +35,9 @@ namespace AlgoKit.Collections.Heaps
 
         public TValue Remove(IHeapHandle<TValue> handle)
         {
+            if (handle == null)
+                throw new ArgumentNullException(nameof(handle));
+
             var casted = handle as THandle;
             if (casted == null)
                 throw new ArgumentException(FormatTypeMismatchMessage(typeof(THandle), handle?.GetType()));
@@ -44,6 +47,9 @@ namespace AlgoKit.Collections.Heaps
 
         public void Update(IHeapHandle<TValue> handle, TValue value)
         {
+            if (handle == null)
+                throw new ArgumentNullException(nameof(handle));
+
             var casted = handle as THandle;
             if (casted == null)
                 throw new ArgumentException(FormatTypeMismatchMessage(typeof(THandle), handle?.GetType()));
@@ -53,6 +59,9 @@ namespace AlgoKit.Collections.Heaps
 
         public void Meld(IHeap<TValue> other)
         {
+            if (other == null)
+                throw new ArgumentNullException(nameof(other));
+
             var casted = other as THeap;
             if (casted == null)
                 throw new ArgumentException(FormatTypeMismatchMessage(typeof(THeap), other?.GetType()));

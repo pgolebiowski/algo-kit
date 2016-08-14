@@ -62,7 +62,7 @@ namespace AlgoKit.Collections.Heaps
         /// <summary>
         /// Gets the number of elements contained in the heap.
         /// </summary>
-        public override int Count => this.nodes.Count;
+        public sealed override int Count => this.nodes.Count;
 
         /// <summary>
         /// Gets the top element of the heap.
@@ -109,6 +109,9 @@ namespace AlgoKit.Collections.Heaps
         /// <param name="node">The node to remove from the heap.</param>
         public override T Remove(ArrayHeapNode<T> node)
         {
+            if (node == null)
+                throw new ArgumentNullException(nameof(node));
+
             // The idea is to replace the specified node by the very last
             // node and shorten the array by one.
              
@@ -144,6 +147,9 @@ namespace AlgoKit.Collections.Heaps
         /// <param name="value">The new value for the node.</param>
         public override void Update(ArrayHeapNode<T> node, T value)
         {
+            if (node == null)
+                throw new ArgumentNullException(nameof(node));
+
             var relation = this.Comparer.Compare(value, node.Value);
             node.Value = value;
 
@@ -167,6 +173,9 @@ namespace AlgoKit.Collections.Heaps
         /// </summary>
         public override void Meld(ArrayHeap<T> other)
         {
+            if (other == null)
+                throw new ArgumentNullException(nameof(other));
+
             this.nodes.AddRange(other.nodes);
             this.Heapify();
         }

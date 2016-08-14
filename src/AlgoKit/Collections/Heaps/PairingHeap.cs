@@ -21,6 +21,9 @@ namespace AlgoKit.Collections.Heaps
         /// </param>
         public PairingHeap(IComparer<T> comparer)
         {
+            if (comparer == null)
+                throw new ArgumentNullException(nameof(comparer));
+
             this.Comparer = comparer;
         }
 
@@ -79,6 +82,9 @@ namespace AlgoKit.Collections.Heaps
         /// </summary>
         public override T Remove(PairingHeapNode<T> node)
         {
+            if (node == null)
+                throw new ArgumentNullException(nameof(node));
+
             // Remove the node from its list of siblings. Merge all its children to form
             // a new tree and merge that tree with the root.
 
@@ -113,6 +119,9 @@ namespace AlgoKit.Collections.Heaps
         /// <param name="value">The new value for the node.</param>
         public override void Update(PairingHeapNode<T> node, T value)
         {
+            if (node == null)
+                throw new ArgumentNullException(nameof(node));
+
             var relation = this.Comparer.Compare(value, node.Value);
             node.Value = value;
 
@@ -158,6 +167,9 @@ namespace AlgoKit.Collections.Heaps
         /// <param name="other">The heap to be merged with this heap.</param>
         public override void Meld(PairingHeap<T> other)
         {
+            if (other == null)
+                throw new ArgumentNullException(nameof(other));
+
             this.count += other.count;
             this.Root = this.Merge(this.Root, other.Root);
         }

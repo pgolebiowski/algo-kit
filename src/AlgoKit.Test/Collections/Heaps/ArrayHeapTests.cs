@@ -54,15 +54,6 @@ namespace AlgoKit.Test.Collections.Heaps
                 var heap = new ArrayHeap<int>(Comparer<int>.Default, 1);
             });
         }
-
-        [Test]
-        public void Should_not_allow_creating_heap_with_null_comparer()
-        {
-            Assert.Throws<ArgumentNullException>(() =>
-            {
-                var heap = new ArrayHeap<int>(null, 2);
-            });
-        }
         
         [TestCaseSource(nameof(GetAritiesToTest))]
         public void Should_not_allow_extracting_or_removing_top_from_empty_heap(int arity)
