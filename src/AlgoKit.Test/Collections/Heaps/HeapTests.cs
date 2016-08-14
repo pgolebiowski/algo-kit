@@ -37,6 +37,16 @@ namespace AlgoKit.Test.Collections.Heaps
                     .Select(x => random.Next(this.ValueLimit))
                     .ToList();
             }
+
+            public int CalculateIterations(int desiredNumber)
+            {
+                if (this.HeapSize <= 10)
+                    return desiredNumber;
+
+                var thousands = desiredNumber / 1000;
+                var weight = thousands / Math.Log10(this.HeapSize);
+                return Math.Min(1, (int) weight);
+            }
         }
 
         public static IEnumerable<HeapConfiguration> GetHeapConfigurations()
@@ -46,7 +56,8 @@ namespace AlgoKit.Test.Collections.Heaps
             for (var i = 1; i <= 10; ++i)
                 yield return new HeapConfiguration(i, 2*i + 1);
 
-            yield return new HeapConfiguration(30, int.MaxValue);
+            yield return new HeapConfiguration(100, int.MaxValue);
+            yield return new HeapConfiguration(1000, int.MaxValue);
         }
 
         private static int Top(IEnumerable<HandleValuePair> list) => list.Select(x => x.Value).Min();
@@ -94,7 +105,8 @@ namespace AlgoKit.Test.Collections.Heaps
         [TestCaseSource(nameof(GetHeapConfigurations))]
         public void Top_should_be_properly_maintained_after_addition(HeapConfiguration conf)
         {
-            for (var seed = 0; seed < 15000; ++seed)
+            var iterations = conf.CalculateIterations(15000);
+            for (var seed = 0; seed < iterations; ++seed)
             {
                 // Arrange
                 var values = conf.GenerateValues(new Random(seed));
@@ -132,7 +144,8 @@ namespace AlgoKit.Test.Collections.Heaps
         [TestCaseSource(nameof(GetHeapConfigurations))]
         public void Elements_should_be_popped_correctly(HeapConfiguration conf)
         {
-            for (var seed = 0; seed < 5000; ++seed)
+            var iterations = conf.CalculateIterations(5000);
+            for (var seed = 0; seed < iterations; ++seed)
             {
                 // Arrange
                 var values = conf.GenerateValues(new Random(seed));
@@ -194,7 +207,8 @@ namespace AlgoKit.Test.Collections.Heaps
         [TestCaseSource(nameof(GetHeapConfigurations))]
         public void All_elements_should_be_removed_correctly(HeapConfiguration conf)
         {
-            for (var seed = 0; seed < 5000; ++seed)
+            var iterations = conf.CalculateIterations(5000);
+            for (var seed = 0; seed < iterations; ++seed)
             {
                 // Arrange
                 var random = new Random(seed);
@@ -232,7 +246,8 @@ namespace AlgoKit.Test.Collections.Heaps
         [TestCaseSource(nameof(GetHeapConfigurations))]
         public void Elements_should_be_removed_correctly(HeapConfiguration conf)
         {
-            for (var seed = 0; seed < 5000; ++seed)
+            var iterations = conf.CalculateIterations(5000);
+            for (var seed = 0; seed < iterations; ++seed)
             {
                 // Arrange
                 var random = new Random(seed);
