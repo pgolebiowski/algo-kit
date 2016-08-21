@@ -3,61 +3,60 @@ using System.Collections.Generic;
 
 namespace AlgoKit.Collections.Heaps
 {
-    public abstract class BaseHeap<TValue, THandle, THeap> : IHeap<TValue, THandle, THeap>
-        where THandle : class, IHeapHandle<TValue>
-        where THeap : class, IHeap<TValue, THandle, THeap>
+    public abstract class BaseHeap<TKey, TValue, TNode, THeap> 
+        : IHeap<TKey, TValue, TNode, THeap>
+        where TNode : class, IHeapNode<TKey, TValue>
+        where THeap : class, IHeap<TKey, TValue, TNode, THeap>
     {
-        /// <summary>
-        /// Gets the <see cref="IComparer{T}"/> for the heap.
-        /// </summary>
-        public IComparer<TValue> Comparer { get; protected set; }
+        public IComparer<TKey> Comparer { get; protected set; }
 
         public abstract int Count { get; }
 
-        /// <summary>
-        /// Returns true if the heap is empty, false otherwise.
-        /// </summary>
         public bool IsEmpty => this.Count == 0;
 
-        public abstract TValue Top();
+        public abstract TNode Top();
 
-        public abstract TValue Pop();
+        public abstract TNode Pop();
 
-        public abstract THandle Add(TValue value);
+        public abstract TNode Add(TKey key, TValue value);
 
-        public abstract TValue Remove(THandle handle);
+        public abstract TValue Remove(TNode node);
 
-        public abstract void Update(THandle handle, TValue value);
+        public abstract void Update(TNode node, TKey key);
 
-        public abstract void Meld(THeap other);
+        public abstract void Merge(THeap other);
 
-        IHeapHandle<TValue> IHeap<TValue>.Add(TValue value) => this.Add(value);
+        IHeapNode<TKey, TValue> IHeap<TKey, TValue>.Top() => this.Top();
 
-        public TValue Remove(IHeapHandle<TValue> handle)
+        IHeapNode<TKey, TValue> IHeap<TKey, TValue>.Pop() => this.Pop();
+
+        IHeapNode<TKey, TValue> IHeap<TKey, TValue>.Add(TKey key, TValue value) => this.Add(key, value);
+
+        public TValue Remove(IHeapNode<TKey, TValue> node)
         {
-            if (handle == null)
-                throw new ArgumentNullException(nameof(handle));
+            if (node == null)
+                throw new ArgumentNullException(nameof(node));
 
-            var casted = handle as THandle;
+            var casted = node as TNode;
             if (casted == null)
-                throw new ArgumentException(FormatTypeMismatchMessage(typeof(THandle), handle?.GetType()));
+                throw new ArgumentException(FormatTypeMismatchMessage(typeof(TNode), node?.GetType()));
 
             return this.Remove(casted);
         }
 
-        public void Update(IHeapHandle<TValue> handle, TValue value)
+        public void Update(IHeapNode<TKey, TValue> node, TKey key)
         {
-            if (handle == null)
-                throw new ArgumentNullException(nameof(handle));
+            if (node == null)
+                throw new ArgumentNullException(nameof(node));
 
-            var casted = handle as THandle;
+            var casted = node as TNode;
             if (casted == null)
-                throw new ArgumentException(FormatTypeMismatchMessage(typeof(THandle), handle?.GetType()));
+                throw new ArgumentException(FormatTypeMismatchMessage(typeof(TNode), node?.GetType()));
 
-            this.Update(casted, value);
+            this.Update(casted, key);
         }
 
-        public void Meld(IHeap<TValue> other)
+        public void Merge(IHeap<TKey, TValue> other)
         {
             if (other == null)
                 throw new ArgumentNullException(nameof(other));
@@ -66,7 +65,7 @@ namespace AlgoKit.Collections.Heaps
             if (casted == null)
                 throw new ArgumentException(FormatTypeMismatchMessage(typeof(THeap), other?.GetType()));
 
-            this.Meld(casted);
+            this.Merge(casted);
         }
 
         private static string FormatTypeMismatchMessage(Type expected, Type actual)

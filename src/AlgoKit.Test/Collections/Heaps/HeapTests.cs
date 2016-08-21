@@ -8,12 +8,12 @@ using NUnit.Framework;
 
 namespace AlgoKit.Test.Collections.Heaps
 {
-    [TestFixture(typeof(ArrayHeap<int>), typeof(ArrayHeapNode<int>))]
-    [TestFixture(typeof(BinomialHeap<int>), typeof(BinomialHeapNode<int>))]
-    [TestFixture(typeof(PairingHeap<int>), typeof(PairingHeapNode<int>))]
+    [TestFixture(typeof(ArrayHeap<int, string>), typeof(ArrayHeapNode<int, string>))]
+    [TestFixture(typeof(BinomialHeap<int, string>), typeof(BinomialHeapNode<int, string>))]
+    [TestFixture(typeof(PairingHeap<int, string>), typeof(PairingHeapNode<int, string>))]
     public class HeapTests<THeap, THandle>
-        where THeap : BaseHeap<int, THandle, THeap>
-        where THandle : class, IHeapHandle<int>
+        where THeap : BaseHeap<int, string, THandle, THeap>
+        where THandle : class, IHeapNode<int, string>
     {
         private static THeap CreateHeapInstance()
         {
@@ -23,18 +23,18 @@ namespace AlgoKit.Test.Collections.Heaps
         public class HeapConfiguration
         {
             public int HeapSize { get; }
-            public int ValueLimit { get; }
+            public int KeyLimit { get; }
 
-            public HeapConfiguration(int heapSize, int valueLimit)
+            public HeapConfiguration(int heapSize, int keyLimit)
             {
                 this.HeapSize = heapSize;
-                this.ValueLimit = valueLimit;
+                this.KeyLimit = keyLimit;
             }
 
-            public List<int> GenerateValues(Random random, int? count = null)
+            public List<int> GenerateKeys(Random random, int? count = null)
             {
                 return Enumerable.Range(1, count ?? this.HeapSize)
-                    .Select(x => random.Next(this.ValueLimit))
+                    .Select(x => random.Next(this.KeyLimit))
                     .ToList();
             }
 
@@ -60,7 +60,7 @@ namespace AlgoKit.Test.Collections.Heaps
             yield return new HeapConfiguration(1000, int.MaxValue);
         }
 
-        private static int Top(IEnumerable<HandleValuePair> list) => list.Select(x => x.Value).Min();
+        private static int Top(IEnumerable<HandleKeyPair> list) => list.Select(x => x.Key).Min();
 
         [Test]
         public void Should_not_allow_creating_a_heap_with_null_comparer()
@@ -74,6 +74,7 @@ namespace AlgoKit.Test.Collections.Heaps
                 }
                 catch (TargetInvocationException e)
                 {
+                    // ReSharper disable once PossibleNullReferenceException
                     throw e.InnerException;
                 }
             });
@@ -87,13 +88,13 @@ namespace AlgoKit.Test.Collections.Heaps
 
             var testDelegates = new TestDelegate[]
             {
-                () => heap.Remove((IHeapHandle<int>)null),
+                () => heap.Remove((IHeapNode<int, string>)null),
                 () => heap.Remove(null),
 
-                () => heap.Meld((IHeap<int>)null),
-                () => heap.Meld(null),
+                () => heap.Merge((IHeap<int, string>)null),
+                () => heap.Merge(null),
 
-                () => heap.Update((IHeapHandle<int>)null, 0),
+                () => heap.Update((IHeapNode<int, string>)null, 0),
                 () => heap.Update(null, 0)
             };
 
@@ -109,22 +110,22 @@ namespace AlgoKit.Test.Collections.Heaps
             for (var seed = 0; seed < iterations; ++seed)
             {
                 // Arrange
-                var values = conf.GenerateValues(new Random(seed));
+                var keys = conf.GenerateKeys(new Random(seed));
                 var heap = CreateHeapInstance();
                 var top = int.MaxValue;
                 var count = 0;
 
-                foreach (var value in values)
+                foreach (var key in keys)
                 {
-                    if (value < top)
-                        top = value;
+                    if (key < top)
+                        top = key;
 
                     // Act
-                    heap.Add(value);
+                    heap.Add(key, Guid.NewGuid().ToString());
                     ++count;
 
                     // Assert
-                    Assert.AreEqual(top, heap.Top());
+                    Assert.AreEqual(top, heap.Top().Key);
                     Assert.AreEqual(count, heap.Count);
                 }
             }
@@ -148,33 +149,33 @@ namespace AlgoKit.Test.Collections.Heaps
             for (var seed = 0; seed < iterations; ++seed)
             {
                 // Arrange
-                var values = conf.GenerateValues(new Random(seed));
+                var keys = conf.GenerateKeys(new Random(seed));
                 var heap = CreateHeapInstance();
                 var count = 0;
 
-                foreach (var value in values)
+                foreach (var key in keys)
                 {
                     Assert.AreEqual(count, heap.Count);
-                    heap.Add(value);
+                    heap.Add(key, Guid.NewGuid().ToString());
                     Assert.AreEqual(++count, heap.Count);
                 }
 
                 // Act & Assert
-                this.Pop_until_empty(heap, values);
+                this.Pop_until_empty(heap, keys);
             }
         }
 
-        private void Pop_until_empty(THeap heap, IReadOnlyCollection<int> values)
+        private void Pop_until_empty(THeap heap, IReadOnlyCollection<int> keys)
         {
-            var count = values.Count;
+            var count = keys.Count;
 
-            foreach (var value in values.OrderBy(x => x))
+            foreach (var key in keys.OrderBy(x => x))
             {
                 Assert.AreEqual(false, heap.IsEmpty);
-                Assert.AreEqual(value, heap.Top());
+                Assert.AreEqual(key, heap.Top().Key);
 
                 Assert.AreEqual(count, heap.Count);
-                Assert.AreEqual(value, heap.Pop());
+                Assert.AreEqual(key, heap.Pop().Key);
                 Assert.AreEqual(--count, heap.Count);
             }
 
@@ -188,25 +189,25 @@ namespace AlgoKit.Test.Collections.Heaps
             {
                 // Arrange
                 var random = new Random(seed);
-                var values = conf.GenerateValues(random);
+                var keys = conf.GenerateKeys(random);
                 var heap = CreateHeapInstance();
 
-                var handles = values
-                    .Select(v => new HandleValuePair(heap.Add(v), v))
+                var handles = keys
+                    .Select(k => new HandleKeyPair(heap.Add(k, Guid.NewGuid().ToString()), k))
                     .ToList();
 
                 for (var i = 0; i < 15000; ++i)
                 {
                     var handleIndex = random.Next(0, conf.HeapSize);
-                    var newValue = random.Next(conf.ValueLimit);
+                    var newKey = random.Next(conf.KeyLimit);
                     var handle = handles[handleIndex];
 
                     // Act
-                    heap.Update(handle.Handle, newValue);
-                    handles[handleIndex].Value = newValue;
+                    heap.Update(handle.Node, newKey);
+                    handles[handleIndex].Key = newKey;
 
                     // Assert
-                    Assert.AreEqual(Top(handles), heap.Top());
+                    Assert.AreEqual(Top(handles), heap.Top().Key);
                 }
             }
         }
@@ -219,23 +220,23 @@ namespace AlgoKit.Test.Collections.Heaps
             {
                 // Arrange
                 var random = new Random(seed);
-                var values = conf.GenerateValues(random);
+                var keys = conf.GenerateKeys(random);
                 var heap = CreateHeapInstance();
                 var count = conf.HeapSize;
 
-                var handles = values
-                    .Select(v => new HandleValuePair(heap.Add(v), v))
+                var handles = keys
+                    .Select(k => new HandleKeyPair(heap.Add(k, Guid.NewGuid().ToString()), k))
                     .ToList();
 
                 // Act & Assert
                 while (!heap.IsEmpty)
                 {
-                    Assert.AreEqual(Top(handles), heap.Top());
+                    Assert.AreEqual(Top(handles), heap.Top().Key);
                     Assert.AreEqual(count, heap.Count);
 
                     var handle = handles[random.Next(count--)];
                     handles.Remove(handle);
-                    heap.Remove(handle.Handle);
+                    heap.Remove(handle.Node);
 
                     if (count == 0)
                     {
@@ -243,7 +244,7 @@ namespace AlgoKit.Test.Collections.Heaps
                     }
                     else
                     {
-                        Assert.AreEqual(Top(handles), heap.Top());
+                        Assert.AreEqual(Top(handles), heap.Top().Key);
                         Assert.AreEqual(count, heap.Count);
                     }
                 }
@@ -258,24 +259,24 @@ namespace AlgoKit.Test.Collections.Heaps
             {
                 // Arrange
                 var random = new Random(seed);
-                var values = conf.GenerateValues(random);
+                var keys = conf.GenerateKeys(random);
 
                 for (var toRemove = 0; toRemove < conf.HeapSize; ++toRemove)
                 {
                     var heap = CreateHeapInstance();
                     var count = conf.HeapSize;
 
-                    var handles = values
-                        .Select(v => new HandleValuePair(heap.Add(v), v))
+                    var handles = keys
+                        .Select(k => new HandleKeyPair(heap.Add(k, Guid.NewGuid().ToString()), k))
                         .ToList();
 
                     // Act & Assert
 
                     // Part I - remove one node
-                    Assert.AreEqual(Top(handles), heap.Top());
+                    Assert.AreEqual(Top(handles), heap.Top().Key);
                     Assert.AreEqual(count--, heap.Count);
 
-                    heap.Remove(handles[toRemove].Handle);
+                    heap.Remove(handles[toRemove].Node);
                     handles.RemoveAt(toRemove);
 
                     if (count == 0)
@@ -284,17 +285,17 @@ namespace AlgoKit.Test.Collections.Heaps
                     }
                     else
                     {
-                        Assert.AreEqual(Top(handles), heap.Top());
+                        Assert.AreEqual(Top(handles), heap.Top().Key);
                         Assert.AreEqual(count, heap.Count);
                     }
 
                     // Part II - pop until empty
                     while (!heap.IsEmpty)
                     {
-                        var min = handles.MinBy(x => x.Value);
+                        var min = handles.MinBy(x => x.Key);
                         handles.Remove(min);
 
-                        Assert.AreEqual(min.Value, heap.Pop());
+                        Assert.AreEqual(min.Key, heap.Pop().Key);
                         Assert.AreEqual(--count, heap.Count);
                     }
 
@@ -307,35 +308,31 @@ namespace AlgoKit.Test.Collections.Heaps
         [TestCaseSource(nameof(GetHeapConfigurations))]
         public void Heaps_should_be_merged_correctly(HeapConfiguration conf)
         {
-            // Merging for array heaps takes ages...
-            if (typeof(THeap) == typeof(ArrayHeap<int>))
-                return;
-
             var iterations = conf.CalculateIterations(5000);
             for (var seed = 0; seed < iterations; ++seed)
             {
                 // Arrange
                 var random = new Random(seed);
-                var values1 = conf.GenerateValues(random);
+                var keys1 = conf.GenerateKeys(random);
                 var secondHeapSize = random.Next(conf.HeapSize/2, conf.HeapSize*2);
-                var values2 = conf.GenerateValues(random, secondHeapSize);
+                var keys2 = conf.GenerateKeys(random, secondHeapSize);
 
                 var heap1 = CreateHeapInstance();
                 var heap2 = CreateHeapInstance();
 
-                foreach (var value in values1)
-                    heap1.Add(value);
+                foreach (var key in keys1)
+                    heap1.Add(key, Guid.NewGuid().ToString());
 
-                foreach (var value in values2)
-                    heap2.Add(value);
+                foreach (var key in keys2)
+                    heap2.Add(key, Guid.NewGuid().ToString());
 
-                var mixedValues = values1.Concat(values2).ToList();
+                var mixedKeys = keys1.Concat(keys2).ToList();
 
                 // Arrange
-                heap1.Meld(heap2);
+                heap1.Merge(heap2);
 
                 // Assert
-                this.Pop_until_empty(heap1, mixedValues);
+                this.Pop_until_empty(heap1, mixedKeys);
             }
         }
     }

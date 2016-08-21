@@ -7,8 +7,8 @@ namespace AlgoKit.Collections.Heaps
     /// Represents a self-adjusting heap-ordered multiary tree inspired by
     /// binomial trees and splay trees.
     /// </summary>
-    /// <typeparam name="T">Specifies the element type of the pairing heap.</typeparam>
-    public class PairingHeap<T> : BaseHeap<T, PairingHeapNode<T>, PairingHeap<T>>
+    public class PairingHeap<TKey, TValue> 
+        : BaseHeap<TKey, TValue, PairingHeapNode<TKey, TValue>, PairingHeap<TKey, TValue>>
     {
         private int count;
 
@@ -19,7 +19,7 @@ namespace AlgoKit.Collections.Heaps
         /// The comparer used to determine whether one object should be extracted
         /// from the heap earlier than the other one.
         /// </param>
-        public PairingHeap(IComparer<T> comparer)
+        public PairingHeap(IComparer<TKey> comparer)
         {
             if (comparer == null)
                 throw new ArgumentNullException(nameof(comparer));
@@ -30,28 +30,22 @@ namespace AlgoKit.Collections.Heaps
         /// <summary>
         /// Gets the root node of the pairing heap.
         /// </summary>
-        public PairingHeapNode<T> Root { get; private set; }
+        public PairingHeapNode<TKey, TValue> Root { get; private set; }
 
-        /// <summary>
-        /// Gets the number of elements contained in the heap.
-        /// </summary>
+        /// <inheritdoc cref="IHeap{TKey,TValue}.Count"/>
         public override int Count => this.count;
 
-        /// <summary>
-        /// Gets the top element of the heap.
-        /// </summary>
-        public override T Top()
+        /// <inheritdoc cref="IHeap{TKey,TValue}.Top"/>
+        public override PairingHeapNode<TKey, TValue> Top()
         {
             if (this.IsEmpty)
                 throw new InvalidOperationException("The heap is empty.");
 
-            return this.Root.Value;
+            return this.Root;
         }
 
-        /// <summary>
-        /// Returns the top element after removing it from the heap.
-        /// </summary>
-        public override T Pop()
+        /// <inheritdoc cref="IHeap{TKey,TValue}.Pop"/>
+        public override PairingHeapNode<TKey, TValue> Pop()
         {
             // Removing the root leaves us with a collection of heap-ordered trees,
             // We combine all these trees by pairwise merging to form one new tree.
@@ -60,16 +54,16 @@ namespace AlgoKit.Collections.Heaps
             if (this.IsEmpty)
                 throw new InvalidOperationException("The heap is empty.");
 
-            return this.Remove(this.Root);
+            var result = this.Root;
+            this.Remove(this.Root);
+            return result;
         }
 
-        /// <summary>
-        /// Adds an object to the heap.
-        /// </summary>
-        public override PairingHeapNode<T> Add(T item)
+        /// <inheritdoc cref="IHeap{TKey,TValue}.Add"/>
+        public override PairingHeapNode<TKey, TValue> Add(TKey key, TValue value)
         {
             // Create a one-node tree for the specified item and merge it with this heap.
-            var tree = new PairingHeapNode<T>(item);
+            var tree = new PairingHeapNode<TKey, TValue>(key, value);
 
             this.Root = this.Merge(this.Root, tree);
             ++this.count;
@@ -77,10 +71,8 @@ namespace AlgoKit.Collections.Heaps
             return tree;
         }
 
-        /// <summary>
-        /// Removes an arbitrary node from the heap.
-        /// </summary>
-        public override T Remove(PairingHeapNode<T> node)
+        /// <inheritdoc cref="IHeap{TKey,TValue}.Remove"/>
+        public override TValue Remove(PairingHeapNode<TKey, TValue> node)
         {
             if (node == null)
                 throw new ArgumentNullException(nameof(node));
@@ -112,18 +104,14 @@ namespace AlgoKit.Collections.Heaps
             return item;
         }
 
-        /// <summary>
-        /// Updates the value contained in the specified node.
-        /// </summary>
-        /// <param name="node">The node to update.</param>
-        /// <param name="value">The new value for the node.</param>
-        public override void Update(PairingHeapNode<T> node, T value)
+        /// <inheritdoc cref="IHeap{TKey,TValue}.Update"/>
+        public override void Update(PairingHeapNode<TKey, TValue> node, TKey key)
         {
             if (node == null)
                 throw new ArgumentNullException(nameof(node));
 
-            var relation = this.Comparer.Compare(value, node.Value);
-            node.Value = value;
+            var relation = this.Comparer.Compare(key, node.Key);
+            node.Key = key;
 
             // If the new value is considered equal to the previous value, there is no need
             // to fix the heap property, because it is already preserved.
@@ -161,11 +149,8 @@ namespace AlgoKit.Collections.Heaps
             this.Root = this.Merge(this.Root, tree);
         }
 
-        /// <summary>
-        /// Merges this heap with another heap, destroying it.
-        /// </summary>
-        /// <param name="other">The heap to be merged with this heap.</param>
-        public override void Meld(PairingHeap<T> other)
+        /// <inheritdoc cref="IHeap{TKey,TValue}.Merge"/>
+        public override void Merge(PairingHeap<TKey, TValue> other)
         {
             if (other == null)
                 throw new ArgumentNullException(nameof(other));
@@ -177,7 +162,7 @@ namespace AlgoKit.Collections.Heaps
         /// <summary>
         /// Merges two heaps and returns the root of the resulting heap.
         /// </summary>
-        private PairingHeapNode<T> Merge(PairingHeapNode<T> a, PairingHeapNode<T> b)
+        private PairingHeapNode<TKey, TValue> Merge(PairingHeapNode<TKey, TValue> a, PairingHeapNode<TKey, TValue> b)
         {
             // If merging occurs between a non-empty pairing heap and an empty
             // pairing heap, merge just returns the non-empty pairing heap.
@@ -195,9 +180,9 @@ namespace AlgoKit.Collections.Heaps
             // a new heap where the smallest root of the two heaps is the root of 
             // the new combined heap and adds the other heap to the list of its children.
 
-            PairingHeapNode<T> parent, child;
+            PairingHeapNode<TKey, TValue> parent, child;
 
-            if (this.Comparer.Compare(a.Value, b.Value) < 0)
+            if (this.Comparer.Compare(a.Key, b.Key) < 0)
             {
                 parent = a;
                 child = b;
@@ -229,12 +214,12 @@ namespace AlgoKit.Collections.Heaps
         /// Performs a two-pass pairing over a list of siblings to form a single tree. 
         /// </summary>
         /// <param name="node">The leftmost node (head) of the list to combine.</param>
-        private PairingHeapNode<T> MergePairwisely(PairingHeapNode<T> node)
+        private PairingHeapNode<TKey, TValue> MergePairwisely(PairingHeapNode<TKey, TValue> node)
         {
             if (node == null)
                 return null;
 
-            PairingHeapNode<T> result, tail = null, next = node;
+            PairingHeapNode<TKey, TValue> result, tail = null, next = node;
 
             // The first pass is based on iterating left to right, merging trees pairwisely.
             // We take two trees from the list, replace them by the result of merging, and

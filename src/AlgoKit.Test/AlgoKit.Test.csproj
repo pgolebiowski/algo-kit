@@ -58,9 +58,10 @@
   <ItemGroup>
     <Compile Include="Collections\Heaps\HeapTests.cs" />
     <Compile Include="Collections\Heaps\ArrayHeapTests.cs" />
-    <Compile Include="Collections\Heaps\HandleValuePair.cs" />
+    <Compile Include="Collections\Heaps\HandleKeyPair.cs" />
     <Compile Include="Collections\Heaps\PairWithPriority.cs" />
     <Compile Include="Collections\Heaps\Utils.cs" />
+    <Compile Include="InterfaceTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

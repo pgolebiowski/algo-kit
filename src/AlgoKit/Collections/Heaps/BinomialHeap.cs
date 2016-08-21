@@ -7,11 +7,12 @@ namespace AlgoKit.Collections.Heaps
     /// Represents a forest of uniquely-sized, heap-ordered binomial trees
     /// in a child-sibling form (binary tree).
     /// </summary>
-    public class BinomialHeap<T> : BaseHeap<T, BinomialHeapNode<T>, BinomialHeap<T>>
+    public class BinomialHeap<TKey, TValue> 
+        : BaseHeap<TKey, TValue, BinomialHeapNode<TKey, TValue>, BinomialHeap<TKey, TValue>>
     {
-        private readonly BinomialHeapNode<T>[] roots;
-        private BinomialHeapNode<T> top;
-        private IComparer<T> fakeComparer = Comparer<T>.Create((x, y) => -1);
+        private readonly BinomialHeapNode<TKey, TValue>[] roots;
+        private BinomialHeapNode<TKey, TValue> top;
+        private IComparer<TKey> fakeComparer = Comparer<TKey>.Create((x, y) => -1);
         private int count;
 
         /// <summary>
@@ -21,35 +22,29 @@ namespace AlgoKit.Collections.Heaps
         /// The comparer used to determine whether one object should be extracted
         /// from the heap earlier than the other one.
         /// </param>
-        public BinomialHeap(IComparer<T> comparer)
+        public BinomialHeap(IComparer<TKey> comparer)
         {
             if (comparer == null)
                 throw new ArgumentNullException(nameof(comparer));
 
             this.Comparer = comparer;
-            this.roots = new BinomialHeapNode<T>[32];
+            this.roots = new BinomialHeapNode<TKey, TValue>[32];
         }
 
-        /// <summary>
-        /// Gets the number of elements contained in the heap.
-        /// </summary>
+        /// <inheritdoc cref="IHeap{TKey,TValue}.Count"/>
         public override int Count => this.count;
 
-        /// <summary>
-        /// Gets the top element of the heap.
-        /// </summary>
-        public override T Top()
+        /// <inheritdoc cref="IHeap{TKey,TValue}.Top"/>
+        public override BinomialHeapNode<TKey, TValue> Top()
         {
             if (this.IsEmpty)
                 throw new InvalidOperationException("The heap is empty.");
 
-            return this.top.Value;
+            return this.top;
         }
 
-        /// <summary>
-        /// Returns the top element after removing it from the heap.
-        /// </summary>
-        public override T Pop()
+        /// <inheritdoc cref="IHeap{TKey,TValue}.Pop"/>
+        public override BinomialHeapNode<TKey, TValue> Pop()
         {
             // Get the root with the top value and remove it from the collection
             // of binomial trees.
@@ -74,15 +69,13 @@ namespace AlgoKit.Collections.Heaps
             return result;
         }
 
-        /// <summary>
-        /// Adds an object to the heap.
-        /// </summary>
-        public override BinomialHeapNode<T> Add(T item)
+        /// <inheritdoc cref="IHeap{TKey,TValue}.Add"/>
+        public override BinomialHeapNode<TKey, TValue> Add(TKey key, TValue value)
         {
             // Create a one-node tree for the specified item and perform
             // the usual merging of heaps.
 
-            var tree = new BinomialHeapNode<T>(item);
+            var tree = new BinomialHeapNode<TKey, TValue>(key, value);
 
             this.MakeRoot(tree);
             ++this.count;
@@ -90,11 +83,8 @@ namespace AlgoKit.Collections.Heaps
             return tree;
         }
 
-        /// <summary>
-        /// Removes an arbitrary node from the heap.
-        /// </summary>
-        /// <param name="node">The node to be removed.</param>
-        public override T Remove(BinomialHeapNode<T> node)
+        /// <inheritdoc cref="IHeap{TKey,TValue}.Remove"/>
+        public override TValue Remove(BinomialHeapNode<TKey, TValue> node)
         {
             if (node == null)
                 throw new ArgumentNullException(nameof(node));
@@ -115,18 +105,14 @@ namespace AlgoKit.Collections.Heaps
             return result;
         }
 
-        /// <summary>
-        /// Updates the value contained in the specified node.
-        /// </summary>
-        /// <param name="node">The node to update.</param>
-        /// <param name="value">The new value for the node.</param>
-        public override void Update(BinomialHeapNode<T> node, T value)
+        /// <inheritdoc cref="IHeap{TKey,TValue}.Update"/>
+        public override void Update(BinomialHeapNode<TKey, TValue> node, TKey key)
         {
             if (node == null)
                 throw new ArgumentNullException(nameof(node));
 
-            var relation = this.Comparer.Compare(value, node.Value);
-            node.Value = value;
+            var relation = this.Comparer.Compare(key, node.Key);
+            node.Key = key;
 
             // If the new value is considered equal to the previous value, there is no need
             // to fix the heap property, because it is already preserved.
@@ -146,11 +132,8 @@ namespace AlgoKit.Collections.Heaps
             }
         }
 
-        /// <summary>
-        /// Merges this heap with another heap, destroying it.
-        /// </summary>
-        /// <param name="other">The heap to be merged with this heap.</param>
-        public override void Meld(BinomialHeap<T> other)
+        /// <inheritdoc cref="IHeap{TKey,TValue}.Merge"/>
+        public override void Merge(BinomialHeap<TKey, TValue> other)
         {
             if (other == null)
                 throw new ArgumentNullException(nameof(other));
@@ -176,7 +159,7 @@ namespace AlgoKit.Collections.Heaps
         /// Moves the node up in the tree to restore heap order.
         /// </summary>
         /// <param name="node">The node to be moved up.</param>
-        private void MoveUp(BinomialHeapNode<T> node)
+        private void MoveUp(BinomialHeapNode<TKey, TValue> node)
         {
             // Exchange the element with its parent, and possibly also with its
             // grandparent, and so on, until the heap property is no longer violated.
@@ -198,7 +181,7 @@ namespace AlgoKit.Collections.Heaps
                     parent = current.Parent;
                 }
 
-                if (this.Comparer.Compare(node.Value, parent.Value) < 0)
+                if (this.Comparer.Compare(node.Key, parent.Key) < 0)
                     this.SwapWithParent(node, parent);
                 else
                     break;
@@ -207,7 +190,7 @@ namespace AlgoKit.Collections.Heaps
             // If we got to the very top of our tree, there is a chance that the global
             // top (for the collection of binomial trees) should be updated as well.
 
-            if (this.Comparer.Compare(node.Value, this.top.Value) < 0)
+            if (this.Comparer.Compare(node.Key, this.top.Key) < 0)
                 this.top = node;
         }
 
@@ -215,7 +198,7 @@ namespace AlgoKit.Collections.Heaps
         /// Moves the node down in the tree to restore heap order.
         /// </summary>
         /// <param name="node">The node to be moved down.</param>
-        private void MoveDown(BinomialHeapNode<T> node)
+        private void MoveDown(BinomialHeapNode<TKey, TValue> node)
         {
             // We want to move one node down in a binomial tree. However,
             // what we have is a binary tree. We need to go to the first child
@@ -235,12 +218,12 @@ namespace AlgoKit.Collections.Heaps
 
             // There are some children, so browse them and find the top one.
             for (var child = topChild.Right; child != null; child = child.Right)
-                if (this.Comparer.Compare(child.Value, topChild.Value) < 0)
+                if (this.Comparer.Compare(child.Key, topChild.Key) < 0)
                     topChild = child;
 
             // In case no child needs to be extracted earlier than the current node,
             // there is nothing more to do - the right spot was found.
-            if (this.Comparer.Compare(node.Value, topChild.Value) <= 0)
+            if (this.Comparer.Compare(node.Key, topChild.Key) <= 0)
                 return;
 
             // Move the top child up by one node and now investigate the
@@ -255,7 +238,7 @@ namespace AlgoKit.Collections.Heaps
         /// subtrees to the list of binomial trees.
         /// </summary>
         /// <param name="node">The root of the tree to break.</param>
-        private void BreakTreeAndInsertChildren(BinomialHeapNode<T> node)
+        private void BreakTreeAndInsertChildren(BinomialHeapNode<TKey, TValue> node)
         {
             var current = node.Left;
             while (current != null)
@@ -270,7 +253,7 @@ namespace AlgoKit.Collections.Heaps
         /// Makes an arbitrary node a root.
         /// </summary>
         /// <param name="node">Node to be made a root.</param>
-        private void MakeRoot(BinomialHeapNode<T> node)
+        private void MakeRoot(BinomialHeapNode<TKey, TValue> node)
         {
             // Roots have no parents and siblings, so adjust the pointers accordingly.
 
@@ -280,7 +263,7 @@ namespace AlgoKit.Collections.Heaps
             // Since we insert a new root to out collection of binomial trees,
             // there is a chance that the global top should be updated as well.
 
-            if (this.top == null || this.Comparer.Compare(node.Value, this.top.Value) < 0)
+            if (this.top == null || this.Comparer.Compare(node.Key, this.top.Key) < 0)
                 this.top = node;
 
             // Now, as long as the appropriate slot for our tree is occupied by another
@@ -297,7 +280,7 @@ namespace AlgoKit.Collections.Heaps
         /// </summary>
         /// <param name="node">The root of the tree to insert.</param>
         /// <param name="merged">The result of merging trees if the appropriate slot is occupied.</param>
-        private bool TryInsert(BinomialHeapNode<T> node, out BinomialHeapNode<T> merged)
+        private bool TryInsert(BinomialHeapNode<TKey, TValue> node, out BinomialHeapNode<TKey, TValue> merged)
         {
             // If the appropriate slot for our tree is empty, simply insert the root
             // and return. However, if there is already a tree with the same rank,
@@ -321,7 +304,7 @@ namespace AlgoKit.Collections.Heaps
         /// <summary>
         /// Swaps a node with its parent.
         /// </summary>
-        private void SwapWithParent(BinomialHeapNode<T> node, BinomialHeapNode<T> parent)
+        private void SwapWithParent(BinomialHeapNode<TKey, TValue> node, BinomialHeapNode<TKey, TValue> parent)
         {
             // Remember that binomial trees are represented here as binary trees.
             // This makes thinking about swapping much easier.
@@ -416,7 +399,7 @@ namespace AlgoKit.Collections.Heaps
                     continue;
                 }
 
-                if (this.Comparer.Compare(root.Value, this.top.Value) < 0)
+                if (this.Comparer.Compare(root.Key, this.top.Key) < 0)
                     this.top = root;
             }
         }
@@ -424,15 +407,15 @@ namespace AlgoKit.Collections.Heaps
         /// <summary>
         /// Merges two trees of equal rank and returns the root of the resulting heap.
         /// </summary>
-        private BinomialHeapNode<T> Merge(BinomialHeapNode<T> a, BinomialHeapNode<T> b)
+        private BinomialHeapNode<TKey, TValue> Merge(BinomialHeapNode<TKey, TValue> a, BinomialHeapNode<TKey, TValue> b)
         {
             // If both binomial heaps are non-empty, the merge function returns
             // a new heap where the smallest root of the two heaps is the root of 
             // the new combined heap and adds the other heap to the list of its children.
 
-            BinomialHeapNode<T> parent, child;
+            BinomialHeapNode<TKey, TValue> parent, child;
 
-            if (this.Comparer.Compare(a.Value, b.Value) < 0)
+            if (this.Comparer.Compare(a.Key, b.Key) < 0)
             {
                 parent = a;
                 child = b;

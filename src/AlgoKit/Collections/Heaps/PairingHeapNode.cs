@@ -4,38 +4,38 @@
     /// Represents a node of a pairing heap. It is a part of a doubly linked list
     /// of its siblings and a parent of some other node.
     /// </summary>
-    /// <typeparam name="T">Specifies the element type of the pairing heap.</typeparam>
-    public class PairingHeapNode<T> : IHeapHandle<T>
+    public class PairingHeapNode<TKey, TValue> : IHeapNode<TKey, TValue>
     {
-        /// <summary>
-        /// Gets the value contained in the node.
-        /// </summary>
-        public T Value { get; set; }
+        /// <inheritdoc cref="IHeapNode{TKey,TValue}.Key"/>
+        public TKey Key { get; internal set; }
+
+        /// <inheritdoc cref="IHeapNode{TKey,TValue}.Value"/>
+        public TValue Value { get; }
 
         /// <summary>
         /// Gets or sets the previous node in the list of this node's siblings.
         /// In case this node is the leftmost node in the list, the previous node
         /// is its parent node. 
         /// </summary>
-        public PairingHeapNode<T> Previous { get; set; }
+        public PairingHeapNode<TKey, TValue> Previous { get; internal set; }
 
         /// <summary>
         /// Gets or sets the next node in the list of this node's siblings.
         /// </summary>
-        public PairingHeapNode<T> Next { get; set; }
+        public PairingHeapNode<TKey, TValue> Next { get; internal set; }
 
         /// <summary>
         /// Gets or sets the leftmost child of this node.
         /// </summary>
-        public PairingHeapNode<T> Child { get; set; }
+        public PairingHeapNode<TKey, TValue> Child { get; internal set; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="PairingHeapNode{T}"/> class,
+        /// Initializes a new instance of the <see cref="PairingHeapNode{TKey,TValue}"/> class,
         /// containing the specified value.
         /// </summary>
-        /// <param name="value">The value to contain in the <see cref="PairingHeapNode{T}"/>.</param>
-        public PairingHeapNode(T value)
+        public PairingHeapNode(TKey key, TValue value)
         {
+            this.Key = key;
             this.Value = value;
         }
 

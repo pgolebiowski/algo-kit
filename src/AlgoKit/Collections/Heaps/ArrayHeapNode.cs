@@ -1,29 +1,28 @@
 ﻿namespace AlgoKit.Collections.Heaps
 {
     /// <summary>
-    /// Represents a node of an <see cref="ArrayHeap{T}"/>.
+    /// Represents a node of an <see cref="ArrayHeap{TKey,TValue}"/>.
     /// </summary>
-    /// <typeparam name="T">Specifies the element type of the array heap.</typeparam>
-    public class ArrayHeapNode<T> : IHeapHandle<T>
+    public class ArrayHeapNode<TKey, TValue> : IHeapNode<TKey, TValue>
     {
-        /// <summary>
-        /// Gets the value contained in the node.
-        /// </summary>
-        public T Value { get; set; }
+        /// <inheritdoc cref="IHeapNode{TKey,TValue}.Key"/>
+        public TKey Key { get; internal set; }
+
+        /// <inheritdoc cref="IHeapNode{TKey,TValue}.Value"/>
+        public TValue Value { get; }
 
         /// <summary>
-        /// The index of the node within an <see cref="ArrayHeap{T}"/>.
+        /// The index of the node within an <see cref="ArrayHeap{TKey,TValue}"/>.
         /// </summary>
-        public int Index { get; set; }
+        public int Index { get; internal set; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ArrayHeapNode{T}"/> class,
+        /// Initializes a new instance of the <see cref="ArrayHeapNode{TKey,TValue}"/> class,
         /// containing the specified value.
         /// </summary>
-        /// <param name="value">The value to contain in the <see cref="ArrayHeapNode{T}"/>.</param>
-        /// <param name="index">The index of the node within an <see cref="ArrayHeap{T}"/>.</param>
-        public ArrayHeapNode(T value, int index)
+        public ArrayHeapNode(TKey key, TValue value, int index)
         {
+            this.Key = key;
             this.Value = value;
             this.Index = index;
         }
