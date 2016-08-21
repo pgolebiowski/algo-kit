@@ -27,8 +27,7 @@ By fulfilling these purposes, AlgoKit is intended to stand out from the gazillio
 * Pairing heaps.
 
 ## To do next
-* Refine the design of classes within `AlgoKit.Collections.Heaps`,
-* Refine functional tests,
+* Write docs on how to use heaps,
 * Provide performance tests.
 
 ## Contributing
