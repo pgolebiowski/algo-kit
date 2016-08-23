@@ -60,7 +60,7 @@ namespace AlgoKit.Test.Collections.Heaps
             yield return new HeapConfiguration(1000, int.MaxValue);
         }
 
-        private static int Top(IEnumerable<HandleKeyPair> list) => list.Select(x => x.Key).Min();
+        private static int Peek(IEnumerable<HandleKeyPair> list) => list.Select(x => x.Key).Min();
 
         [Test]
         public void Should_not_allow_creating_a_heap_with_null_comparer()
@@ -125,20 +125,20 @@ namespace AlgoKit.Test.Collections.Heaps
                     ++count;
 
                     // Assert
-                    Assert.AreEqual(top, heap.Top().Key);
+                    Assert.AreEqual(top, heap.Peek().Key);
                     Assert.AreEqual(count, heap.Count);
                 }
             }
         }
 
         [Test]
-        public void Should_not_allow_top_or_pop_from_empty_heap()
+        public void Should_not_allow_peek_or_pop_from_empty_heap()
         {
             // Arrange
             var heap = CreateHeapInstance();
 
             // Act & Assert
-            Assert.Throws<InvalidOperationException>(() => heap.Top());
+            Assert.Throws<InvalidOperationException>(() => heap.Peek());
             Assert.Throws<InvalidOperationException>(() => heap.Pop());
         }
 
@@ -172,7 +172,7 @@ namespace AlgoKit.Test.Collections.Heaps
             foreach (var key in keys.OrderBy(x => x))
             {
                 Assert.AreEqual(false, heap.IsEmpty);
-                Assert.AreEqual(key, heap.Top().Key);
+                Assert.AreEqual(key, heap.Peek().Key);
 
                 Assert.AreEqual(count, heap.Count);
                 Assert.AreEqual(key, heap.Pop().Key);
@@ -207,7 +207,7 @@ namespace AlgoKit.Test.Collections.Heaps
                     handles[handleIndex].Key = newKey;
 
                     // Assert
-                    Assert.AreEqual(Top(handles), heap.Top().Key);
+                    Assert.AreEqual(Peek(handles), heap.Peek().Key);
                 }
             }
         }
@@ -231,7 +231,7 @@ namespace AlgoKit.Test.Collections.Heaps
                 // Act & Assert
                 while (!heap.IsEmpty)
                 {
-                    Assert.AreEqual(Top(handles), heap.Top().Key);
+                    Assert.AreEqual(Peek(handles), heap.Peek().Key);
                     Assert.AreEqual(count, heap.Count);
 
                     var handle = handles[random.Next(count--)];
@@ -240,11 +240,11 @@ namespace AlgoKit.Test.Collections.Heaps
 
                     if (count == 0)
                     {
-                        Assert.Throws<InvalidOperationException>(() => heap.Top());
+                        Assert.Throws<InvalidOperationException>(() => heap.Peek());
                     }
                     else
                     {
-                        Assert.AreEqual(Top(handles), heap.Top().Key);
+                        Assert.AreEqual(Peek(handles), heap.Peek().Key);
                         Assert.AreEqual(count, heap.Count);
                     }
                 }
@@ -273,7 +273,7 @@ namespace AlgoKit.Test.Collections.Heaps
                     // Act & Assert
 
                     // Part I - remove one node
-                    Assert.AreEqual(Top(handles), heap.Top().Key);
+                    Assert.AreEqual(Peek(handles), heap.Peek().Key);
                     Assert.AreEqual(count--, heap.Count);
 
                     heap.Remove(handles[toRemove].Node);
@@ -281,11 +281,11 @@ namespace AlgoKit.Test.Collections.Heaps
 
                     if (count == 0)
                     {
-                        Assert.Throws<InvalidOperationException>(() => heap.Top());
+                        Assert.Throws<InvalidOperationException>(() => heap.Peek());
                     }
                     else
                     {
-                        Assert.AreEqual(Top(handles), heap.Top().Key);
+                        Assert.AreEqual(Peek(handles), heap.Peek().Key);
                         Assert.AreEqual(count, heap.Count);
                     }
 

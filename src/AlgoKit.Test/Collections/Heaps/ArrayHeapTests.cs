@@ -65,7 +65,7 @@ namespace AlgoKit.Test.Collections.Heaps
             var heap = CreateHeap(arity);
 
             // Act & Assert
-            Assert.Throws<InvalidOperationException>(() => heap.Top());
+            Assert.Throws<InvalidOperationException>(() => heap.Peek());
             Assert.Throws<InvalidOperationException>(() => heap.Pop());
         }
 
@@ -83,12 +83,12 @@ namespace AlgoKit.Test.Collections.Heaps
             foreach (var item in items.OrderBy(x => x.Key))
             {
                 Assert.AreEqual(false, heap.IsEmpty);
-                Assert.AreEqual(item.Key, heap.Top().Key);
+                Assert.AreEqual(item.Key, heap.Peek().Key);
                 Assert.AreEqual(item.Key, heap.Pop().Key);
             }
 
             Assert.AreEqual(true, heap.IsEmpty);
-            Assert.Throws<InvalidOperationException>(() => heap.Top());
+            Assert.Throws<InvalidOperationException>(() => heap.Peek());
             Assert.Throws<InvalidOperationException>(() => heap.Pop());
         }
 
@@ -112,7 +112,7 @@ namespace AlgoKit.Test.Collections.Heaps
             foreach (var item in items.OrderBy(x => x))
             {
                 Assert.AreEqual(false, heap.IsEmpty);
-                Assert.AreEqual(item, heap.Top().Key);
+                Assert.AreEqual(item, heap.Peek().Key);
 
                 Assert.AreEqual(count, heap.Count);
                 Assert.AreEqual(item, heap.Pop().Key);

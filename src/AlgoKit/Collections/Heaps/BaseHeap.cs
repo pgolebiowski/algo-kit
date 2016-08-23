@@ -14,7 +14,7 @@ namespace AlgoKit.Collections.Heaps
 
         public bool IsEmpty => this.Count == 0;
 
-        public abstract TNode Top();
+        public abstract TNode Peek();
 
         public abstract TNode Pop();
 
@@ -26,7 +26,7 @@ namespace AlgoKit.Collections.Heaps
 
         public abstract void Merge(THeap other);
 
-        IHeapNode<TKey, TValue> IHeap<TKey, TValue>.Top() => this.Top();
+        IHeapNode<TKey, TValue> IHeap<TKey, TValue>.Peek() => this.Peek();
 
         IHeapNode<TKey, TValue> IHeap<TKey, TValue>.Pop() => this.Pop();
 

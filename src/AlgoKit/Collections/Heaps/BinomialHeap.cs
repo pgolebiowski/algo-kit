@@ -34,8 +34,8 @@ namespace AlgoKit.Collections.Heaps
         /// <inheritdoc cref="IHeap{TKey,TValue}.Count"/>
         public override int Count => this.count;
 
-        /// <inheritdoc cref="IHeap{TKey,TValue}.Top"/>
-        public override BinomialHeapNode<TKey, TValue> Top()
+        /// <inheritdoc cref="IHeap{TKey,TValue}.Peek"/>
+        public override BinomialHeapNode<TKey, TValue> Peek()
         {
             if (this.IsEmpty)
                 throw new InvalidOperationException("The heap is empty.");
@@ -49,7 +49,7 @@ namespace AlgoKit.Collections.Heaps
             // Get the root with the top value and remove it from the collection
             // of binomial trees.
 
-            var result = this.Top();
+            var result = this.Peek();
             var toRemove = this.top;
 
             this.top = null;

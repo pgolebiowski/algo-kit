@@ -63,8 +63,8 @@ namespace AlgoKit.Collections.Heaps
         /// <inheritdoc cref="IHeap{TKey,TValue}.Count"/>
         public sealed override int Count => this.nodes.Count;
 
-        /// <inheritdoc cref="IHeap{TKey,TValue}.Top"/>
-        public override ArrayHeapNode<TKey, TValue> Top()
+        /// <inheritdoc cref="IHeap{TKey,TValue}.Peek"/>
+        public override ArrayHeapNode<TKey, TValue> Peek()
         {
             if (this.IsEmpty)
                 throw new InvalidOperationException("The heap is empty.");

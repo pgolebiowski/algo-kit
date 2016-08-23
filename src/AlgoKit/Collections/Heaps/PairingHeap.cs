@@ -35,8 +35,8 @@ namespace AlgoKit.Collections.Heaps
         /// <inheritdoc cref="IHeap{TKey,TValue}.Count"/>
         public override int Count => this.count;
 
-        /// <inheritdoc cref="IHeap{TKey,TValue}.Top"/>
-        public override PairingHeapNode<TKey, TValue> Top()
+        /// <inheritdoc cref="IHeap{TKey,TValue}.Peek"/>
+        public override PairingHeapNode<TKey, TValue> Peek()
         {
             if (this.IsEmpty)
                 throw new InvalidOperationException("The heap is empty.");

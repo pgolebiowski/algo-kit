@@ -24,9 +24,9 @@ namespace AlgoKit.Collections.Heaps
         bool IsEmpty { get; }
 
         /// <summary>
-        /// Gets the top element of the heap.
+        /// Returns the object at the top of the heap without removing it.
         /// </summary>
-        IHeapNode<TKey, TValue> Top();
+        IHeapNode<TKey, TValue> Peek();
 
         /// <summary>
         /// Returns the top element after removing it from the heap.
@@ -64,7 +64,7 @@ namespace AlgoKit.Collections.Heaps
         where TNode : class, IHeapNode<TKey, TValue>
         where THeap : class, IHeap<TKey, TValue, TNode, THeap>
     {
-        new TNode Top();
+        new TNode Peek();
 
         new TNode Pop();
 
