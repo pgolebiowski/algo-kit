@@ -26,10 +26,6 @@ By fulfilling these purposes, AlgoKit is intended to stand out from the gazillio
 * Binomial heaps,
 * Pairing heaps.
 
-## To do next
-* Write docs on how to use heaps,
-* Provide performance tests.
-
 ## Contributing
 [![][email-img]](mailto:ortorektyk@gmail.com)
 
