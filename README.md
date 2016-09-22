@@ -26,6 +26,10 @@ By fulfilling these purposes, AlgoKit is intended to stand out from the gazillio
 * Binomial heaps,
 * Pairing heaps.
 
+### Permutations
+
+* Lexicographic ordering (Knuth's Algorithm L).
+
 ## Contributing
 [![][email-img]](mailto:ortorektyk@gmail.com)
 

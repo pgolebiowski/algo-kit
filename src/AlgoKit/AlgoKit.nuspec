@@ -12,7 +12,7 @@
     <description>Top-quality toolkit of algorithms and data structures for .NET developers.</description>
 
     <copyright>Copyright 2016</copyright>
-    <tags>algorithm structures heap tree binomial pairing</tags>
+    <tags>algorithm structures heap tree binomial pairing priority queue</tags>
     <dependencies>
     </dependencies>
   </metadata>
