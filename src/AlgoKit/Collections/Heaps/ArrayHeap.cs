@@ -163,6 +163,12 @@ namespace AlgoKit.Collections.Heaps
             this.nodes = merged.nodes;
         }
 
+        /// <inheritdoc cref="IHeap{TKey,TValue}.GetEnumerator"/>
+        public override IEnumerator<IHeapNode<TKey, TValue>> GetEnumerator()
+        {
+            return this.nodes.GetEnumerator();
+        }
+
         /// <summary>
         /// Puts a node at the specified index.
         /// </summary>

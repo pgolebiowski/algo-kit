@@ -1,4 +1,6 @@
-﻿namespace AlgoKit.Collections.Heaps
+﻿using System.Collections.Generic;
+
+namespace AlgoKit.Collections.Heaps
 {
     /// <summary>
     /// Represents a node of a binomial heap. Binomial trees are encoded as
@@ -40,6 +42,18 @@
         {
             this.Key = key;
             this.Value = value;
+        }
+
+        /// <summary>
+        /// Traverses this heap, visiting each node exactly once.
+        /// </summary>
+        public IEnumerable<BinomialHeapNode<TKey, TValue>> Traverse()
+        {
+            yield return this;
+
+            for (var child = this.Left; child != null; child = child.Right)
+                foreach (var node in child.Traverse())
+                    yield return node;
         }
     }
 }

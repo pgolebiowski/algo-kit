@@ -335,5 +335,45 @@ namespace AlgoKit.Test.Collections.Heaps
                 this.Pop_until_empty(heap1, mixedKeys);
             }
         }
+
+        [Test]
+        public void Enumerating_empty_heap_should_yield_empty_collection()
+        {
+            // Arrange
+            var heap = CreateHeapInstance();
+
+            // Assert
+            Assert.IsEmpty(heap);
+        }
+
+        [TestCaseSource(nameof(GetHeapConfigurations))]
+        public void Heap_enumeration_should_yield_all_elements(HeapConfiguration conf)
+        {
+            var iterations = conf.CalculateIterations(1000);
+            for (var seed = 0; seed < iterations; ++seed)
+            {
+                // Arrange
+                var random = new Random(seed);
+                var keys = conf.GenerateKeys(random);
+                var heap = CreateHeapInstance();
+
+                var handles = keys
+                    .Select(k => heap.Add(k, Guid.NewGuid().ToString()));
+
+                var expected = handles
+                    .Select(x => new KeyValuePair<int, string>(x.Key, x.Value))
+                    .OrderBy(x => x.Value)
+                    .ToArray();
+
+                // Act
+                var actual = heap
+                    .Select(x => new KeyValuePair<int, string>(x.Key, x.Value))
+                    .OrderBy(x => x.Value)
+                    .ToArray();
+
+                // Assert
+                CollectionAssert.AreEqual(expected, actual);
+            }
+        }
     }
 }

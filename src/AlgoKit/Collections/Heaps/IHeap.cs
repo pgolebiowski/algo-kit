@@ -6,7 +6,7 @@ namespace AlgoKit.Collections.Heaps
     /// Represents a specialized tree-based collection of key/value
     /// pairs capable of retrieving the top element efficiently.
     /// </summary>
-    public interface IHeap<TKey, TValue>
+    public interface IHeap<TKey, TValue> : IEnumerable<IHeapNode<TKey, TValue>>
     {
         /// <summary>
         /// Gets the <see cref="IComparer{T}"/> for the heap.

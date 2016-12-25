@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace AlgoKit.Collections.Heaps
 {
@@ -142,6 +143,15 @@ namespace AlgoKit.Collections.Heaps
             foreach (var root in other.roots)
                 if (root != null)
                     this.MakeRoot(root);
+        }
+
+        /// <inheritdoc cref="IHeap{TKey,TValue}.GetEnumerator"/>
+        public override IEnumerator<IHeapNode<TKey, TValue>> GetEnumerator()
+        {
+            return this.roots
+                .Where(x => x != null)
+                .SelectMany(x => x.Traverse())
+                .GetEnumerator();
         }
 
         /// <summary>

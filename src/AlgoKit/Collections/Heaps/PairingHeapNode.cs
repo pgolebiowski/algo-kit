@@ -1,4 +1,6 @@
-﻿namespace AlgoKit.Collections.Heaps
+﻿using System.Collections.Generic;
+
+namespace AlgoKit.Collections.Heaps
 {
     /// <summary>
     /// Represents a node of a pairing heap. It is a part of a doubly linked list
@@ -58,6 +60,18 @@
 
             if (this.Next != null)
                 this.Next.Previous = this.Previous;
+        }
+
+        /// <summary>
+        /// Traverses this heap, visiting each node exactly once.
+        /// </summary>
+        public IEnumerable<PairingHeapNode<TKey, TValue>> Traverse()
+        {
+            yield return this;
+
+            for (var child = this.Child; child != null; child = child.Next)
+                foreach (var node in child.Traverse())
+                    yield return node;
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace AlgoKit.Collections.Heaps
 {
@@ -157,6 +158,14 @@ namespace AlgoKit.Collections.Heaps
 
             this.count += other.count;
             this.Root = this.Merge(this.Root, other.Root);
+        }
+
+        /// <inheritdoc cref="IHeap{TKey,TValue}.GetEnumerator"/>
+        public override IEnumerator<IHeapNode<TKey, TValue>> GetEnumerator()
+        {
+            return this.IsEmpty
+                ? Enumerable.Empty<IHeapNode<TKey, TValue>>().GetEnumerator()
+                : this.Root.Traverse().GetEnumerator();
         }
 
         /// <summary>

@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace AlgoKit.Collections.Heaps
@@ -72,5 +73,9 @@ namespace AlgoKit.Collections.Heaps
         {
             return $"Expected type '{expected.FullName}', but was '{actual.FullName}'.";
         }
+
+        public abstract IEnumerator<IHeapNode<TKey, TValue>> GetEnumerator();
+
+        IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
     }
 }
