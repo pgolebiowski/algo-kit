@@ -396,10 +396,8 @@ namespace AlgoKit.Collections.Heaps
         /// </summary>
         private void UpdateTop()
         {
-            for (var i = 0; i < this.roots.Length; ++i)
+            foreach (var root in this.roots)
             {
-                var root = this.roots[i];
-
                 if (root == null)
                     continue;
 

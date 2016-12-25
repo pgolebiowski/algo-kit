@@ -40,7 +40,7 @@ namespace AlgoKit.Collections.Heaps
 
             var casted = node as TNode;
             if (casted == null)
-                throw new ArgumentException(FormatTypeMismatchMessage(typeof(TNode), node?.GetType()));
+                throw new ArgumentException(FormatTypeMismatchMessage(typeof(TNode), node.GetType()));
 
             return this.Remove(casted);
         }
@@ -52,7 +52,7 @@ namespace AlgoKit.Collections.Heaps
 
             var casted = node as TNode;
             if (casted == null)
-                throw new ArgumentException(FormatTypeMismatchMessage(typeof(TNode), node?.GetType()));
+                throw new ArgumentException(FormatTypeMismatchMessage(typeof(TNode), node.GetType()));
 
             this.Update(casted, key);
         }
@@ -64,7 +64,7 @@ namespace AlgoKit.Collections.Heaps
 
             var casted = other as THeap;
             if (casted == null)
-                throw new ArgumentException(FormatTypeMismatchMessage(typeof(THeap), other?.GetType()));
+                throw new ArgumentException(FormatTypeMismatchMessage(typeof(THeap), other.GetType()));
 
             this.Merge(casted);
         }
