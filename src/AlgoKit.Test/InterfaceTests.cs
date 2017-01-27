@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using NUnit.Framework;
 
 namespace AlgoKit.Test
@@ -16,6 +17,7 @@ namespace AlgoKit.Test
 
             var wrongMethods = Assembly.GetAssembly(algoKitType)
                 .GetTypes()
+                .Where(x => !x.GetCustomAttributes(typeof(CompilerGeneratedAttribute)).Any())
                 .SelectMany(type => type.GetMethods().Select(method => new
                 {
                     Method = method,
