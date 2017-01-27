@@ -56,7 +56,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Algorithms\Permutations\FisherYatesShuffleTests.cs" />
     <Compile Include="Algorithms\Permutations\PermutationLexicographicOrderingTests.cs" />
+    <Compile Include="RandomWithSeed.cs" />
     <Compile Include="Collections\Heaps\HeapTests.cs" />
     <Compile Include="Collections\Heaps\ArrayHeapTests.cs" />
     <Compile Include="Collections\Heaps\HandleKeyPair.cs" />

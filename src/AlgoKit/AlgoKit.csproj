@@ -40,6 +40,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Algorithms\Permutations\FisherYatesShuffle.cs" />
+    <Compile Include="Algorithms\Permutations\IShuffleAlgorithm.cs" />
     <Compile Include="Algorithms\Permutations\PermutationLexicographicOrdering.cs" />
     <Compile Include="Collections\Heaps\ArrayHeap.cs" />
     <Compile Include="Collections\Heaps\ArrayHeapNode.cs" />
@@ -52,6 +54,7 @@
     <Compile Include="Collections\Heaps\PairingHeap.cs" />
     <Compile Include="Collections\Heaps\PairingHeapNode.cs" />
     <Compile Include="Collections\Heaps\QuaternaryHeap.cs" />
+    <Compile Include="Extensions\ListExtensions.cs" />
     <Compile Include="Extensions\ObjectExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
