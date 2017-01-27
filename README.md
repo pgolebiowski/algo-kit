@@ -29,6 +29,11 @@ By fulfilling these purposes, AlgoKit is intended to stand out from the gazillio
 ### Permutations
 
 * Lexicographic ordering (Knuth's Algorithm L).
+* Fisher-Yates shuffle (Knuth's Algorithm P).
+
+### Numbers
+
+* Base converter (supporting arbitrary collection of digits)
 
 ## Contributing
 [![][email-img]](mailto:ortorektyk@gmail.com)
