@@ -9,6 +9,12 @@
 # AlgoKit
 Yet another toolkit of algorithms and data structures for .NET developers. 
 
+## Install
+
+```bash
+dotnet add package AlgoKit
+```
+
 ## Purpose
 The project has two main purposes:
 
