@@ -3,17 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using AlgoKit.Algorithms.Permutations;
 using AlgoKit.Extensions;
-using NUnit.Framework;
+using Xunit;
 
 namespace AlgoKit.Test.Algorithms.Permutations
 {
-    [TestFixture]
     public class PermutationLexicographicOrderingTests
     {
-        public static IEnumerable<TestCaseData> GetTestCases()
-            => Enumerable.Range(1, 6).Select(x => new TestCaseData(x));
+        public static IEnumerable<object[]> GetTestCases()
+            => Enumerable.Range(1, 6).Select(x => x.Yield<object>().ToArray());
 
-        [TestCaseSource(nameof(GetTestCases))]
+        [Theory]
+        [MemberData(nameof(GetTestCases))]
         public void ShouldProperlyFindNextPermutationInLexicographicOrder(int count)
         {
             // Arrange
@@ -30,11 +30,12 @@ namespace AlgoKit.Test.Algorithms.Permutations
 
                 // Assert
                 Assert.True(wasFoundNext);
-                Assert.AreEqual(Stringify(expected), Stringify(input));
+                Assert.Equal(Stringify(expected), Stringify(input));
             }
         }
 
-        [TestCaseSource(nameof(GetTestCases))]
+        [Theory]
+        [MemberData(nameof(GetTestCases))]
         public void ShouldNotModifyPermutationIfGivenOneIsLastAlready(int count)
         {
             // Arrange
@@ -47,10 +48,11 @@ namespace AlgoKit.Test.Algorithms.Permutations
 
             // Assert
             Assert.False(wasFoundNext);
-            Assert.AreEqual(Stringify(original), Stringify(copy));
+            Assert.Equal(Stringify(original), Stringify(copy));
         }
 
-        [TestCaseSource(nameof(GetTestCases))]
+        [Theory]
+        [MemberData(nameof(GetTestCases))]
         public void ShouldEnumeratePermutationsInLexicographicOrder(int count)
         {
             // Arrange
@@ -66,7 +68,7 @@ namespace AlgoKit.Test.Algorithms.Permutations
                 .ToArray();
 
             // Assert
-            CollectionAssert.AreEqual(expected, actual);
+            Assert.True(actual.SequenceEqual(expected));
         }
 
         private static IEnumerable<IEnumerable<T>> GetPermutations<T>(IList<T> list, int length)

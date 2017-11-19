@@ -1,16 +1,16 @@
 ﻿using System;
 using AlgoKit.Numbers;
-using NUnit.Framework;
+using Xunit;
 
 namespace AlgoKit.Test.Numbers
 {
-    [TestFixture]
     public class BaseConverterTests
     {
-        [TestCase("01")]
-        [TestCase("01234567")]
-        [TestCase("0123456789")]
-        [TestCase("0123456789abcdef")]
+        [Theory]
+        [InlineData("01")]
+        [InlineData("01234567")]
+        [InlineData("0123456789")]
+        [InlineData("0123456789abcdef")]
         public void ShouldProperlyHandleCommonBases(string digits)
         {
             // Arrange
@@ -25,27 +25,28 @@ namespace AlgoKit.Test.Numbers
                 var convertedBack = converter.ToBase10(inTargetBase);
 
                 // Assert
-                Assert.AreEqual(correctInTargetBase, inTargetBase);
-                Assert.AreEqual(i, convertedBack);
+                Assert.Equal(correctInTargetBase, inTargetBase);
+                Assert.Equal(i, convertedBack);
             }            
         }
 
-        [TestCase("ab", "baabbaaabaababbabaaaaaaa")]
-        [TestCase("abc", "caacbbaabbacbab")]
-        [TestCase("abcd", "cbcacbbccaaa")]
-        [TestCase("abcde", "baadaaaaaaa")]
-        [TestCase("abcdef", "ffecaabee")]
-        [TestCase("abcdefg", "bfagggded")]
-        [TestCase("abcdefgh", "egbbdcaa")]
-        [TestCase("abcdefghi", "cahdbdhb")]
-        [TestCase("abcdefghij", "baaaaaaa")]
-        [TestCase("abcdefghijk", "fhbabgk")]
-        [TestCase("abcdefghijkl", "decdafe")]
-        [TestCase("abcdefghijklm", "cambihk")]
-        [TestCase("abcdefghijklmn", "beieefk")]
-        [TestCase("abcdefghijklmno", "nchogk")]
-        [TestCase("abcdefghijklmnop", "jijgia")]
-        [TestCase("abcdefghijklmnopqrst", "dckaaa")]
+        [Theory]
+        [InlineData("ab", "baabbaaabaababbabaaaaaaa")]
+        [InlineData("abc", "caacbbaabbacbab")]
+        [InlineData("abcd", "cbcacbbccaaa")]
+        [InlineData("abcde", "baadaaaaaaa")]
+        [InlineData("abcdef", "ffecaabee")]
+        [InlineData("abcdefg", "bfagggded")]
+        [InlineData("abcdefgh", "egbbdcaa")]
+        [InlineData("abcdefghi", "cahdbdhb")]
+        [InlineData("abcdefghij", "baaaaaaa")]
+        [InlineData("abcdefghijk", "fhbabgk")]
+        [InlineData("abcdefghijkl", "decdafe")]
+        [InlineData("abcdefghijklm", "cambihk")]
+        [InlineData("abcdefghijklmn", "beieefk")]
+        [InlineData("abcdefghijklmno", "nchogk")]
+        [InlineData("abcdefghijklmnop", "jijgia")]
+        [InlineData("abcdefghijklmnopqrst", "dckaaa")]
         public void ShouldHandleTenMillionInVariousBases(string digits, string expected)
         {
             // Arrange
@@ -57,8 +58,8 @@ namespace AlgoKit.Test.Numbers
             var convertedBack = converter.ToBase10(inTargetBase);
 
             // Assert
-            Assert.AreEqual(expected, inTargetBase);
-            Assert.AreEqual(number, convertedBack);
+            Assert.Equal(expected, inTargetBase);
+            Assert.Equal(number, convertedBack);
         }
     }
 }

@@ -2,15 +2,14 @@
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using NUnit.Framework;
+using Xunit;
 
 namespace AlgoKit.Test
 {
-    [TestFixture]
     public class InterfaceTests
     {
-        [Test]
-        [Description("It is crucial for parameter names to match when inheriting docs.")]
+        [Fact]
+        // It is crucial for parameter names to match when inheriting docs.
         public void Overridden_methods_should_have_same_parameter_names()
         {
             var algoKitType = typeof(AlgoKit.Collections.Heaps.IHeap<int, int>);
@@ -38,7 +37,7 @@ namespace AlgoKit.Test
             foreach (var method in wrongMethods)
                 Console.WriteLine($"{method.ParentType.Name}.{method.Method.Name}");
 
-            Assert.Fail($"There are {wrongMethods.Length} methods with wrong parameter names.");
+            throw new Exception($"There are {wrongMethods.Length} methods with wrong parameter names.");
         }
     }
 }

@@ -3,20 +3,23 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using AlgoKit.Collections.Heaps;
+using AlgoKit.Extensions;
 using MoreLinq;
-using NUnit.Framework;
+using Xunit;
 
 namespace AlgoKit.Test.Collections.Heaps
 {
-    [TestFixture(typeof(ArrayHeap<int, string>), typeof(ArrayHeapNode<int, string>))]
-    [TestFixture(typeof(BinomialHeap<int, string>), typeof(BinomialHeapNode<int, string>))]
-    [TestFixture(typeof(PairingHeap<int, string>), typeof(PairingHeapNode<int, string>))]
-    public class HeapTests<THeap, THandle>
+    public class _ArrayHeapTests : HeapTests<ArrayHeap<int, string>, ArrayHeapNode<int, string>>{}
+    public class _BinomialHeapTests : HeapTests<BinomialHeap<int, string>, BinomialHeapNode<int, string>>{}
+    public class _PairingHeapTests : HeapTests<PairingHeap<int, string>, PairingHeapNode<int, string>>{}
+
+    public abstract class HeapTests<THeap, THandle>
         where THeap : BaseHeap<int, string, THandle, THeap>
         where THandle : class, IHeapNode<int, string>
     {
         private static THeap CreateHeapInstance()
         {
+
             return (THeap) Activator.CreateInstance(typeof(THeap), Comparer<int>.Default);
         }
 
@@ -49,44 +52,42 @@ namespace AlgoKit.Test.Collections.Heaps
             }
         }
 
-        public static IEnumerable<HeapConfiguration> GetHeapConfigurations()
+        public static IEnumerable<object[]> GetHeapConfigurations()
         {
-            yield return new HeapConfiguration(1, 1);
+            yield return new HeapConfiguration(1, 1).Yield<object>().ToArray();;
 
             for (var i = 1; i <= 10; ++i)
-                yield return new HeapConfiguration(i, 2*i + 1);
+                yield return new HeapConfiguration(i, 2*i + 1).Yield<object>().ToArray();;
 
-            yield return new HeapConfiguration(100, int.MaxValue);
-            yield return new HeapConfiguration(1000, int.MaxValue);
+            yield return new HeapConfiguration(100, int.MaxValue).Yield<object>().ToArray();;
+            yield return new HeapConfiguration(1000, int.MaxValue).Yield<object>().ToArray();;
         }
 
         private static int Peek(IEnumerable<HandleKeyPair> list) => list.Select(x => x.Key).Min();
 
-        [Test]
+        [Fact]
         public void Should_not_allow_creating_a_heap_with_null_comparer()
         {
             Assert.Throws<ArgumentNullException>(() =>
             {
                 try
                 {
-                    // ReSharper disable once UnusedVariable
                     var heap = (THeap) Activator.CreateInstance(typeof(THeap), (IComparer<int>) null);
                 }
                 catch (TargetInvocationException e)
                 {
-                    // ReSharper disable once PossibleNullReferenceException
                     throw e.InnerException;
                 }
             });
         }
 
-        [Test]
+        [Fact]
         public void Should_not_allow_passing_null_handle_or_heap_as_a_parameter()
         {
             // Arrange
             var heap = CreateHeapInstance();
 
-            var testDelegates = new TestDelegate[]
+            var testDelegates = new Action[]
             {
                 () => heap.Remove((IHeapNode<int, string>)null),
                 () => heap.Remove(null),
@@ -103,7 +104,8 @@ namespace AlgoKit.Test.Collections.Heaps
                 Assert.Throws<ArgumentNullException>(testDelegate);
         }
 
-        [TestCaseSource(nameof(GetHeapConfigurations))]
+        [Theory]
+        [MemberData(nameof(GetHeapConfigurations))]
         public void Top_should_be_properly_maintained_after_addition(HeapConfiguration conf)
         {
             var iterations = conf.CalculateIterations(15000);
@@ -125,13 +127,13 @@ namespace AlgoKit.Test.Collections.Heaps
                     ++count;
 
                     // Assert
-                    Assert.AreEqual(top, heap.Peek().Key);
-                    Assert.AreEqual(count, heap.Count);
+                    Assert.Equal(top, heap.Peek().Key);
+                    Assert.Equal(count, heap.Count);
                 }
             }
         }
 
-        [Test]
+        [Fact]
         public void Should_not_allow_peek_or_pop_from_empty_heap()
         {
             // Arrange
@@ -142,7 +144,8 @@ namespace AlgoKit.Test.Collections.Heaps
             Assert.Throws<InvalidOperationException>(() => heap.Pop());
         }
 
-        [TestCaseSource(nameof(GetHeapConfigurations))]
+        [Theory]
+        [MemberData(nameof(GetHeapConfigurations))]
         public void Elements_should_be_popped_correctly(HeapConfiguration conf)
         {
             var iterations = conf.CalculateIterations(5000);
@@ -155,9 +158,9 @@ namespace AlgoKit.Test.Collections.Heaps
 
                 foreach (var key in keys)
                 {
-                    Assert.AreEqual(count, heap.Count);
+                    Assert.Equal(count, heap.Count);
                     heap.Add(key, Guid.NewGuid().ToString());
-                    Assert.AreEqual(++count, heap.Count);
+                    Assert.Equal(++count, heap.Count);
                 }
 
                 // Act & Assert
@@ -171,18 +174,19 @@ namespace AlgoKit.Test.Collections.Heaps
 
             foreach (var key in keys.OrderBy(x => x))
             {
-                Assert.AreEqual(false, heap.IsEmpty);
-                Assert.AreEqual(key, heap.Peek().Key);
+                Assert.False(heap.IsEmpty);
+                Assert.Equal(key, heap.Peek().Key);
 
-                Assert.AreEqual(count, heap.Count);
-                Assert.AreEqual(key, heap.Pop().Key);
-                Assert.AreEqual(--count, heap.Count);
+                Assert.Equal(count, heap.Count);
+                Assert.Equal(key, heap.Pop().Key);
+                Assert.Equal(--count, heap.Count);
             }
 
-            Assert.AreEqual(true, heap.IsEmpty);
+            Assert.True(heap.IsEmpty);
         }
 
-        [TestCaseSource(nameof(GetHeapConfigurations))]
+        [Theory]
+        [MemberData(nameof(GetHeapConfigurations))]
         public void Elements_should_be_updated_correctly(HeapConfiguration conf)
         {
             for (var seed = 0; seed < 15; ++seed)
@@ -207,12 +211,13 @@ namespace AlgoKit.Test.Collections.Heaps
                     handles[handleIndex].Key = newKey;
 
                     // Assert
-                    Assert.AreEqual(Peek(handles), heap.Peek().Key);
+                    Assert.Equal(Peek(handles), heap.Peek().Key);
                 }
             }
         }
 
-        [TestCaseSource(nameof(GetHeapConfigurations))]
+        [Theory]
+        [MemberData(nameof(GetHeapConfigurations))]
         public void All_elements_should_be_removed_correctly(HeapConfiguration conf)
         {
             var iterations = conf.CalculateIterations(5000);
@@ -231,8 +236,8 @@ namespace AlgoKit.Test.Collections.Heaps
                 // Act & Assert
                 while (!heap.IsEmpty)
                 {
-                    Assert.AreEqual(Peek(handles), heap.Peek().Key);
-                    Assert.AreEqual(count, heap.Count);
+                    Assert.Equal(Peek(handles), heap.Peek().Key);
+                    Assert.Equal(count, heap.Count);
 
                     var handle = handles[random.Next(count--)];
                     handles.Remove(handle);
@@ -244,14 +249,15 @@ namespace AlgoKit.Test.Collections.Heaps
                     }
                     else
                     {
-                        Assert.AreEqual(Peek(handles), heap.Peek().Key);
-                        Assert.AreEqual(count, heap.Count);
+                        Assert.Equal(Peek(handles), heap.Peek().Key);
+                        Assert.Equal(count, heap.Count);
                     }
                 }
             }
         }
 
-        [TestCaseSource(nameof(GetHeapConfigurations))]
+        [Theory]
+        [MemberData(nameof(GetHeapConfigurations))]
         public void Elements_should_be_removed_correctly(HeapConfiguration conf)
         {
             var iterations = conf.CalculateIterations(5000);
@@ -273,8 +279,8 @@ namespace AlgoKit.Test.Collections.Heaps
                     // Act & Assert
 
                     // Part I - remove one node
-                    Assert.AreEqual(Peek(handles), heap.Peek().Key);
-                    Assert.AreEqual(count--, heap.Count);
+                    Assert.Equal(Peek(handles), heap.Peek().Key);
+                    Assert.Equal(count--, heap.Count);
 
                     heap.Remove(handles[toRemove].Node);
                     handles.RemoveAt(toRemove);
@@ -285,8 +291,8 @@ namespace AlgoKit.Test.Collections.Heaps
                     }
                     else
                     {
-                        Assert.AreEqual(Peek(handles), heap.Peek().Key);
-                        Assert.AreEqual(count, heap.Count);
+                        Assert.Equal(Peek(handles), heap.Peek().Key);
+                        Assert.Equal(count, heap.Count);
                     }
 
                     // Part II - pop until empty
@@ -295,17 +301,18 @@ namespace AlgoKit.Test.Collections.Heaps
                         var min = handles.MinBy(x => x.Key);
                         handles.Remove(min);
 
-                        Assert.AreEqual(min.Key, heap.Pop().Key);
-                        Assert.AreEqual(--count, heap.Count);
+                        Assert.Equal(min.Key, heap.Pop().Key);
+                        Assert.Equal(--count, heap.Count);
                     }
 
                     Assert.True(heap.IsEmpty);
-                    Assert.AreEqual(0, count);
+                    Assert.Equal(0, count);
                 }
             }
         }
 
-        [TestCaseSource(nameof(GetHeapConfigurations))]
+        [Theory]
+        [MemberData(nameof(GetHeapConfigurations))]
         public void Heaps_should_be_merged_correctly(HeapConfiguration conf)
         {
             var iterations = conf.CalculateIterations(5000);
@@ -336,17 +343,18 @@ namespace AlgoKit.Test.Collections.Heaps
             }
         }
 
-        [Test]
+        [Fact]
         public void Enumerating_empty_heap_should_yield_empty_collection()
         {
             // Arrange
             var heap = CreateHeapInstance();
 
             // Assert
-            Assert.IsEmpty(heap);
+            Assert.Empty(heap);
         }
 
-        [TestCaseSource(nameof(GetHeapConfigurations))]
+        [Theory]
+        [MemberData(nameof(GetHeapConfigurations))]
         public void Heap_enumeration_should_yield_all_elements(HeapConfiguration conf)
         {
             var iterations = conf.CalculateIterations(1000);
@@ -372,7 +380,7 @@ namespace AlgoKit.Test.Collections.Heaps
                     .ToArray();
 
                 // Assert
-                CollectionAssert.AreEqual(expected, actual);
+                Assert.True(expected.SequenceEqual(actual));
             }
         }
     }

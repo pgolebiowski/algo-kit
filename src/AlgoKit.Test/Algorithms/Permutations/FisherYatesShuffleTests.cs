@@ -1,17 +1,18 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using AlgoKit.Algorithms.Permutations;
-using NUnit.Framework;
+using AlgoKit.Extensions;
+using Xunit;
 
 namespace AlgoKit.Test.Algorithms.Permutations
 {
-    [TestFixture]
     public class FisherYatesShuffleTests
     {
-        public static IEnumerable<TestCaseData> GetTestCases()
-            => Enumerable.Range(1, 5).Select(x => new TestCaseData(x));
+        public static IEnumerable<object[]> GetTestCases()
+            => Enumerable.Range(1, 5).Select(x => x.Yield<object>().ToArray());
 
-        [TestCaseSource(nameof(GetTestCases))]
+        [Theory]
+        [MemberData(nameof(GetTestCases))]
         public void PermutationsShouldBeUnbiased(int count)
         {
             // Arrange
@@ -44,7 +45,7 @@ namespace AlgoKit.Test.Algorithms.Permutations
                 var message = $"Expected permutation to be yielded {minAllowed} <= x <= {maxAllowed} times, " +
                               $"but was {occurences}. Seed: {random.Seed}";
 
-                Assert.IsTrue(occurences >= minAllowed && occurences <= maxAllowed, message);
+                Assert.True(occurences >= minAllowed && occurences <= maxAllowed, message);
             }
         }
 

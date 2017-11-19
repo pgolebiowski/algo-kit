@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using AlgoKit.Collections.Heaps;
-using NUnit.Framework;
+using AlgoKit.Extensions;
+using Xunit;
 
 namespace AlgoKit.Test.Collections.Heaps
 {
-    [TestFixture]
     public class ArrayHeapTests
     {
         private static ArrayHeap<int, string> CreateHeap(int arity)
@@ -19,20 +19,20 @@ namespace AlgoKit.Test.Collections.Heaps
             return new ArrayHeap<int, string>(Comparer<int>.Default, arity, new List<KeyValuePair<int, string>>(collection));
         }
         
-        public static IEnumerable<int> GetAritiesToTest()
+        public static IEnumerable<object[]> GetAritiesToTest()
         {
             foreach (var arity in Enumerable.Range(1, 20))
-                yield return arity;
+                yield return arity.Yield<object>().ToArray();
 
-            yield return 50;
-            yield return 100;
-            yield return 500;
-            yield return 1000;
-            yield return 10000;
-            yield return 50000;
+            yield return 50.Yield<object>().ToArray();
+            yield return 100.Yield<object>().ToArray();
+            yield return 500.Yield<object>().ToArray();
+            yield return 1000.Yield<object>().ToArray();
+            yield return 10000.Yield<object>().ToArray();
+            yield return 50000.Yield<object>().ToArray();
         }
 
-        [Test]
+        [Fact]
         public void Should_not_allow_creating_heap_with_null_collection()
         {
             Assert.Throws<ArgumentNullException>(() =>
@@ -42,7 +42,7 @@ namespace AlgoKit.Test.Collections.Heaps
             });
         }
 
-        [Test]
+        [Fact]
         public void Should_not_allow_creating_heap_with_arity_less_than_1()
         {
             Assert.Throws<ArgumentOutOfRangeException>(() =>
@@ -51,14 +51,12 @@ namespace AlgoKit.Test.Collections.Heaps
                 var heap = new ArrayHeap<int, string>(Comparer<int>.Default, 0);
             });
 
-            Assert.DoesNotThrow(() =>
-            {
-                // ReSharper disable once UnusedVariable
-                var heap = new ArrayHeap<int, string>(Comparer<int>.Default, 1);
-            });
+            // TODO: add does not throw
+            var heap2 = new ArrayHeap<int, string>(Comparer<int>.Default, 1);
         }
         
-        [TestCaseSource(nameof(GetAritiesToTest))]
+        [Theory]
+        [MemberData(nameof(GetAritiesToTest))]
         public void Should_not_allow_extracting_or_removing_top_from_empty_heap(int arity)
         {
             // Arrange
@@ -69,7 +67,8 @@ namespace AlgoKit.Test.Collections.Heaps
             Assert.Throws<InvalidOperationException>(() => heap.Pop());
         }
 
-        [TestCaseSource(nameof(GetAritiesToTest))]
+        [Theory]
+        [MemberData(nameof(GetAritiesToTest))]
         public void Should_heapify_collection_correctly(int arity)
         {
             // Arrange
@@ -82,17 +81,18 @@ namespace AlgoKit.Test.Collections.Heaps
             // Act & Assert
             foreach (var item in items.OrderBy(x => x.Key))
             {
-                Assert.AreEqual(false, heap.IsEmpty);
-                Assert.AreEqual(item.Key, heap.Peek().Key);
-                Assert.AreEqual(item.Key, heap.Pop().Key);
+                Assert.False(heap.IsEmpty);
+                Assert.Equal(item.Key, heap.Peek().Key);
+                Assert.Equal(item.Key, heap.Pop().Key);
             }
 
-            Assert.AreEqual(true, heap.IsEmpty);
+            Assert.True(heap.IsEmpty);
             Assert.Throws<InvalidOperationException>(() => heap.Peek());
             Assert.Throws<InvalidOperationException>(() => heap.Pop());
         }
 
-        [TestCaseSource(nameof(GetAritiesToTest))]
+        [Theory]
+        [MemberData(nameof(GetAritiesToTest))]
         public void Elements_should_be_added_and_popped_correctly(int arity)
         {
             // Arrange
@@ -103,23 +103,23 @@ namespace AlgoKit.Test.Collections.Heaps
             // Act
             foreach (var item in items)
             {
-                Assert.AreEqual(count, heap.Count);
+                Assert.Equal(count, heap.Count);
                 heap.Add(item, Guid.NewGuid().ToString());
-                Assert.AreEqual(++count, heap.Count);
+                Assert.Equal(++count, heap.Count);
             }
 
             // Assert
             foreach (var item in items.OrderBy(x => x))
             {
-                Assert.AreEqual(false, heap.IsEmpty);
-                Assert.AreEqual(item, heap.Peek().Key);
+                Assert.False(heap.IsEmpty);
+                Assert.Equal(item, heap.Peek().Key);
 
-                Assert.AreEqual(count, heap.Count);
-                Assert.AreEqual(item, heap.Pop().Key);
-                Assert.AreEqual(--count, heap.Count);
+                Assert.Equal(count, heap.Count);
+                Assert.Equal(item, heap.Pop().Key);
+                Assert.Equal(--count, heap.Count);
             }
 
-            Assert.AreEqual(true, heap.IsEmpty);
+            Assert.True(heap.IsEmpty);
         }
     }
 }
