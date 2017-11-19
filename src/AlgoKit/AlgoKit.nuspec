@@ -17,6 +17,6 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="obj\Release\netcoreapp2.0\AlgoKit.dll" target="lib" />
+    <file src="obj\Release\netstandard2.0\AlgoKit.dll" target="lib" />
   </files>
 </package>
