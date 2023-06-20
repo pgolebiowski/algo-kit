@@ -42,7 +42,6 @@ By fulfilling these purposes, AlgoKit is intended to stand out from the gazillio
 * Base converter (supporting arbitrary collection of digits)
 
 ## Contributing
-[![][email-img]](mailto:ortorektyk@gmail.com)
 
 Star the project, give feedback, suggest an improvement you need, or just tell me about your day :smile: Feel free to open an [issue] or to submit a [pull request].
 
